@@ -45,7 +45,7 @@ function set_build_variable {
 # 2 - github_ref
 # 3 - github_sha 
 function set_build_type {
-    if [ [ "${BUILD_ID}" == *"Integration"*  ] || [ -z "${BUILD_ID}"  ] ]
+    if [ "${BUILD_ID}" == *"Integration"* ] || [ -z "${BUILD_ID}" ]
     then
         if [ ! [ "${1}" == "--" ] ]
         then 
@@ -125,6 +125,9 @@ set_build_type "-${TRAVIS_TAG}-" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_BRANCH}"
 set_build_type "-${FHIR_GIT_TAG}-" "${FHIR_GIT_BUILD_NUMBER}" "${FHIR_GIT_BRANCH}"
 
 export BUILD_DISPLAY_NAME = "${BUILD_ID}"
+
+# Outputting JAVA_HOME
+debugging "JAVA_HOME is [${JAVA_HOME}]"
 
 # Reset to Original Directory
 popd > /dev/null

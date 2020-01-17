@@ -31,30 +31,7 @@ SOURCE_DIRS=()
 
 
 
-# build_source - Build source from a Project PATH
-# Reference https://maven.apache.org/plugins/maven-source-plugin/
-function build_source { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/${PROJECT_NAME}-build_source.log"
 
-    PROJECT_PATH="$1"
-    PROJECT_NAME="$2"
-
-    mvn ${THREAD_COUNT} source:jar source:test-jar -f ${PROJECT_PATH} --log-file ${LOG_DIR}/${PROJECT_NAME}-build_source.log
-    check_and_fail $? "build_source - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-build_source.log
-}
-
-# build_javadoc_jar - Build javadoc jar from a Project PATH
-# Reference https://maven.apache.org/plugins/maven-javadoc-plugin/
-function build_javadoc_jar { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/${PROJECT_NAME}-build_javadoc_jar.log"
-
-    PROJECT_PATH="$1"
-    PROJECT_NAME="$2"
-
-    # intentionally not stopping on warnings... 
-    mvn ${THREAD_COUNT} javadoc:jar javadoc:test-jar -f ${PROJECT_PATH} -DadditionalJOption=-Xdoclint:none --log-file ${LOG_DIR}/${PROJECT_NAME}-build_javadoc_jar.log
-    check_and_fail $? "build_javadoc_jar - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-build_javadoc_jar.log
-}
 
 # build_javadoc_site - Build javadoc site aggregate from a Project PATH
 # Reference https://maven.apache.org/plugins/maven-javadoc-plugin/
@@ -89,18 +66,6 @@ function build_source_javadoc {
     check_and_fail $? "build_source_javadoc - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-build_source_javadoc.log
 }
 
-# build_install - Build install from a Project PATH
-# Reference https://maven.apache.org/plugins/maven-install-plugin/
-function build_install { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/${PROJECT_NAME}-build_install.log"
-
-    PROJECT_PATH="$1"
-    PROJECT_NAME="$2"
-
-    # clean and install (do both now)
-    mvn ${THREAD_COUNT} clean install -f ${PROJECT_PATH} --log-file ${LOG_DIR}/${PROJECT_NAME}-build_install.log
-    check_and_fail $? "build_install - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-build_install.log
-}
 
 
 # files_changed - between two branches or two tags

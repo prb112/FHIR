@@ -54,6 +54,9 @@ function change_all_versions {
     set_version "fhir-tools"
     mvn ${THREAD_COUNT} clean package install -ntp -B -N -f fhir-parent 
     set_version "fhir-parent" 
+
+    mvn -ntp -B versions:set -DgroupId=com.ibm.fhir -DartifactId='fhir-examples' -DoldVersion='*' -DnewVersion=${BUILD_VERSION} -f 'fhir-parent'
+    mvn -ntp -B versions:set -DgroupId=com.ibm.fhir -DartifactId='fhir-tools' -DoldVersion='*' -DnewVersion=${BUILD_VERSION} -f 'fhir-parent'
 }
 
 ###############################################################################

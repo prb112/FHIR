@@ -10,9 +10,6 @@
 # - Travis CI
 # - GitHub Actions 
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/
-GIT_TAG=""
-
 # if release-
 
 # if snapshot-

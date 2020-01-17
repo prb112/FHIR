@@ -10,28 +10,82 @@
 # - Travis CI
 # - GitHub Actions 
 
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home/
-GIT_TAG=""
+# Store the current directory to reset to
+pushd $(pwd) > /dev/null
 
-# if release-
+# Change to the release directory
+cd "$(dirname ${BASH_SOURCE[0]})"
 
-# if snapshot-
+# Import Scripts
+source "$(dirname '$0')/logging.sh"
 
-# clean
+# Basic information
+SCRIPT_NAME="$(basename ${BASH_SOURCE[0]})"
+debugging "Script Name is ${SCRIPT_NAME}"
 
-# set release versions 
+# Reset to Original Directory
+popd > /dev/null
 
-# source
+###############################################################################
+# Function Declarations:
 
-# javadoc
+# set_version - set version per latest build_id 
+# Parameters: 
+#   PROJECT
+#   NEW_VERISON
+# Reference https://www.mojohaus.org/versions-maven-plugin/set-mojo.html
+# use versions:revert - option to revert the change. 
+function set_version { 
+    announce "${FUNCNAME[0]} - started - ${PROJECT_PATH}"
+    PROJECT_PATH="$1"
+    OLD_VERSION='*'
 
-# site
-mvn site -f fhir-parent
+    # If we need build_numbers added, uncomment the next. 
+    #BUILD_NUMBER="-"`date +%s`
+    NEW_VERSION="${BUILD_ID}"
+    #echo "[VERSION SET - START] - ${NEW_VERSION} - [`date`]"
+    mvn ${THREAD_COUNT} versions:set -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
+    check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
+}
 
-# deploy
+# change_all_versions - change all versions 
+function change_all_versions { 
+    set_version "fhir-examples"
+    set_version "fhir-tools"
+    mvn ${THREAD_COUNT} clean package install -N -f fhir-parent 
+    set_version "fhir-parent" 
+}
 
-# jacoco
+###############################################################################
+# check to see if mvn exists
+if which mvn | grep -i mvn
+then 
+    debugging 'mvn is found!'
+else 
+    warn 'mvn is not found!'
+fi
 
-# Synch to Maven Central 
+#RELEASE_CANDIDATE or RELEASE or SNAPSHOT or EXISTING
+case $BUILD_TYPE in
+    RELEASE_CANDIDATE) 
+        change_all_versions
+        header_line
+    ;;
+    RELEASE) 
+        change_all_versions
+        header_line
+    ;;
+    SNAPSHOT) 
+        info "SNAPSHOT build is not set"
+        header_line
+    ;;
+    EXISTING)
+        info "EXISTING build is not set"
+        header_line
+    ;;
+    *)
+        warn "invalid function called, dropping through "
+    ;;
+esac
 
 # EOF

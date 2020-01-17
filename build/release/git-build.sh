@@ -185,28 +185,7 @@ function tag_release {
     git push --tags 
 }
 
-# set_version - set version per latest tag 
-# Parameters: 
-#   PROJECT
-#   NEW_VERISON
-#   LOGS
-# Reference https://www.mojohaus.org/versions-maven-plugin/set-mojo.html
-# 
-# versions:revert - option to revert the change. 
-function set_version { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/build_set_version-${2}.log"
 
-    LOGS="${LOG_DIR}/build_set_version-${2}.log"
-    PROJECT_PATH="$1"
-    OLD_VERSION='*'
-
-    # If we need build_numbers added, uncomment the next. 
-    #BUILD_NUMBER="-"`date +%s`
-    NEW_VERSION="${3}${BUILD_NUMBER}"
-    #echo "[VERSION SET - START] - ${NEW_VERSION} - [`date`]"
-    mvn ${THREAD_COUNT} versions:set -f ${PROJECT_PATH} --log-file ${LOGS} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
-    check_and_fail $? "set_version - ${PROJECT_PATH}"
-}
 
 
 

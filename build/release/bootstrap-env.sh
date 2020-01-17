@@ -103,6 +103,14 @@ then
 fi
 
 ###############################################################################
+# wipe out existing bootstrap.env files 
+
+if [ -f bootstrap.env ]
+then 
+    rm -f bootstrap.env
+fi
+
+###############################################################################
 # Setup Default Variables
 set_build_variable BUILD_VERSION "" "${TRAVIS_TAG}"
 set_build_variable BUILD_VERSION "development" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"

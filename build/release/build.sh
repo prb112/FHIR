@@ -49,8 +49,8 @@ function build_all {
     _mvn 'fhir-tools' '-Pdeploy-bintray,fhir-javadocs'
     _mvn 'fhir-examples' '-Pdeploy-bintray,fhir-javadocs'
 
-    mvn -ntp -B version:set -DgroupId=com.ibm.fhir -DartifactId='fhir-examples' -DoldVersion='*' -DnewVersion=${BUILD_VERSION}
-    mvn -ntp -B version:set -DgroupId=com.ibm.fhir -DartifactId='fhir-tools' -DoldVersion='*' -DnewVersion=${BUILD_VERSION}
+    mvn -ntp -B versions:set -DgroupId=com.ibm.fhir -DartifactId='fhir-examples' -DoldVersion='*' -DnewVersion=${BUILD_VERSION}
+    mvn -ntp -B versions:set -DgroupId=com.ibm.fhir -DartifactId='fhir-tools' -DoldVersion='*' -DnewVersion=${BUILD_VERSION}
 
     PROFILES_ARR=(integration)
     PROFILES_ARR+=(model-all-tests)

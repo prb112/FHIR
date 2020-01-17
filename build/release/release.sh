@@ -6,8 +6,6 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-# build 
-
 # site
 mvn site -f fhir-parent
 

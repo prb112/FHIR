@@ -29,19 +29,7 @@ BUILD_TYPE="$1"
 # in deployment
 SOURCE_DIRS=()
 
-###############################################################################
-# Functions: 
-# build_clean - Build source from a Project PATH
-# Reference https://maven.apache.org/plugins/maven-clean-plugin/
-function build_clean { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/${PROJECT_NAME}-clean.log"
 
-    PROJECT_PATH="$1"
-    PROJECT_NAME="$2"
-
-    mvn ${THREAD_COUNT} clean -f ${PROJECT_PATH} --log-file ${LOG_DIR}/${PROJECT_NAME}-clean.log
-    check_and_fail $? "build_clean - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-clean.log
-}
 
 # build_source - Build source from a Project PATH
 # Reference https://maven.apache.org/plugins/maven-source-plugin/

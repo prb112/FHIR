@@ -6,9 +6,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-# Release enables tag release with 
-# - Travis CI
-# - GitHub Actions 
+# set the version 
 
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null
@@ -44,7 +42,7 @@ function set_version {
     #BUILD_NUMBER="-"`date +%s`
     NEW_VERSION="${BUILD_ID}"
     #echo "[VERSION SET - START] - ${NEW_VERSION} - [`date`]"
-    mvn ${THREAD_COUNT} versions:set -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
+    mvn ${THREAD_COUNT} versions:set -ntu -B -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }
 
@@ -52,7 +50,7 @@ function set_version {
 function change_all_versions { 
     set_version "fhir-examples"
     set_version "fhir-tools"
-    mvn ${THREAD_COUNT} clean package install -N -f fhir-parent 
+    mvn ${THREAD_COUNT} clean package install -ntu -B -N -f fhir-parent 
     set_version "fhir-parent" 
 }
 

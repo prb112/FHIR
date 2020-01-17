@@ -40,7 +40,7 @@ function set_version {
 
     # If we need build_numbers added, uncomment the next. 
     NEW_VERSION="${BUILD_ID}"
-    mvn ${THREAD_COUNT} versions:set -ntu -B -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
+    mvn ${THREAD_COUNT} versions:set -ntp -B -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }
 
@@ -48,7 +48,7 @@ function set_version {
 function change_all_versions { 
     set_version "fhir-examples"
     set_version "fhir-tools"
-    mvn ${THREAD_COUNT} clean package install -ntu -B -N -f fhir-parent 
+    mvn ${THREAD_COUNT} clean package install -ntp -B -N -f fhir-parent 
     set_version "fhir-parent" 
 }
 

@@ -34,7 +34,7 @@ function build_clean {
 
     PROJECT_PATH="$1"
 
-    mvn ${THREAD_COUNT} clean -ntu -B -f ${PROJECT_PATH}
+    mvn ${THREAD_COUNT} clean -ntp -B -f ${PROJECT_PATH}
     check_and_fail $? "build_clean - finish"
 }
 

@@ -89,7 +89,9 @@ fi
 
 ###############################################################################
 # Setup Git - makes sure there is a gitignore which puts the log in this folder. 
-GIT_IGNORE='build/.gitignore'
+debugging "Current directory is $(pwd)"
+
+GIT_IGNORE='.gitignore'
 if [ ! -f ${GIT_IGNORE} ]
 then 
     echo 'logs/' > ${GIT_IGNORE} 
@@ -97,16 +99,9 @@ then
 fi
 
 ###############################################################################
-# Setup for the script/build
-export JAVA_HOME=/opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/
-JAVADOC_GOAL=" -Pvalidate-javadoc javadoc:javadoc "
-
-JAVA_VERSION=
-
-###############################################################################
 # Setup Default Variables
 set_build_variable BUILD_VERSION "" "${TRAVIS_TAG}"
-set_build_variable BUILD_VERSION development $(echo ${GITHUB_REF} | sed 's|refs/heads/||g')
+set_build_variable BUILD_VERSION "development" "$(echo ${GITHUB_REF} | sed 's|refs/heads/||g')"
 
 set_build_variable GIT_BRANCH "${TRAVIS_PULL_REQUEST_BRANCH}" "${TRAVIS_BRANCH}"
 set_build_variable GIT_BRANCH "${GITHUB_REF}" "${GITHUB_REF}"
@@ -116,7 +111,7 @@ set_build_variable GIT_COMMIT "${TRAVIS_COMMIT}" "${TRAVIS_COMMIT}"
 
 # Embedded in the 
 set_build_variable GIT_URL "" ${TRAVIS_REPO_SLUG}
-set_build_variable GIT_URL development "${GITHUB_REPOSITORY}"
+set_build_variable GIT_URL "development" "${GITHUB_REPOSITORY}"
 
 # Create Build ID - Check if integration build
 # sets BUILD_TYPE and BUILD_ID (naturally one of these cannot be empty to hold true.)

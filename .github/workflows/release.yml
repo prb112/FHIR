@@ -32,5 +32,6 @@ jobs:
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
         GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
         CI: true
+        JAVA_HOME: /opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/
       run: |
         bash build/release/bootstrap-env.sh

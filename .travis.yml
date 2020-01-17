@@ -62,6 +62,9 @@ jdk:
 matrix: 
   fast_finish: true
 
+# set JAVA_HOME /opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/
+
+
 ################################################################################################################
 # GIT Settings: 
 branches:

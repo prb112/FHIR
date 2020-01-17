@@ -33,9 +33,9 @@ function set_build_variable {
         else
             export $1=$2
         fi 
-        debugging "Environment Variable is set [$(env | grep -i ${1})]"
+        debugging "Environment Variable is set [${1}] as [$(env | grep -i ${1})]"
     else 
-        debugging "Environment Variable is already set [$(env | grep -i ${1})]"
+        debugging "Environment Variable is already set [${1}] as [$(env | grep -i ${1})]"
     fi
     
 }
@@ -47,7 +47,7 @@ function set_build_variable {
 function set_build_type {
     if [ "${BUILD_ID}" == *"Integration"* ] || [ -z "${BUILD_ID}" ]
     then
-        if [ "${1}" != "--" ]
+        if [ "${1}-" != "---" ]
         then 
             # not empty and is tag build
             if [[ "${1}" == *"RC"* ]]

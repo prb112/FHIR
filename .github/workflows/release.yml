@@ -13,17 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: [ 'openjdk8', 'openjdk11' ]
+        java: [ 'openjdk11' ]
       fail-fast: false
     steps:
-    - uses: actions/checkout@v2
+    - name: Grab the Master Branch
+      uses: actions/checkout@v2
+      with:
+        ref: refs/heads/master
+        fetch-depth: 1
     - name: Set up OpenJDK
       uses: joschi/setup-jdk@v1
       with:
         java-version: ${{ matrix.java }}
-    - name: Build and Release Tag
-    - name: Build parent with tests
+    - name: Build and Release Tags
       env:
         BASE: origin/${{ github['base_ref'] }}
+        GITHUB_TOKEN: ${{ secrets.DOCS_SITE_TOKEN }}
+        GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
+        GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        CI: true
       run: |
         bash build/release/bootstrap-env.sh

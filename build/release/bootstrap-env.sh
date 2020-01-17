@@ -129,9 +129,8 @@ export BUILD_DISPLAY_NAME="${BUILD_ID}"
 # Outputting JAVA_HOME
 debugging "JAVA_HOME is [${JAVA_HOME}]"
 
-env > bootstrap.env
-
 # Reset to Original Directory
 popd > /dev/null
+env > bootstrap.env
 
 # EOF

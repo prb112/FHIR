@@ -39,7 +39,7 @@ function set_version {
     OLD_VERSION='*'
 
     # If we need build_numbers added, uncomment the next. 
-    NEW_VERSION="${BUILD_ID}"
+    NEW_VERSION="${BUILD_VERSION}"
     mvn ${THREAD_COUNT} versions:set -ntp -B -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }

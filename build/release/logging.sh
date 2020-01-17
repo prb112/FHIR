@@ -48,7 +48,7 @@ function diagnostic_details {
 # used in concert with long running task
 function announce { 
     PROJECT_NAME="${1}"
-    info "Starting - [${PROJECT_NAME}]"
+    info "[${PROJECT_NAME}] - start"
 }
 
 # check_and_fail - fails if the build is in a bad shape

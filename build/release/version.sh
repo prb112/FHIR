@@ -34,8 +34,8 @@ popd > /dev/null
 # Reference https://www.mojohaus.org/versions-maven-plugin/set-mojo.html
 # use versions:revert - option to revert the change. 
 function set_version { 
-    announce "${FUNCNAME[0]} - started - ${PROJECT_PATH}"
-    PROJECT_PATH="$0"
+    announce "${FUNCNAME[0]} - ${PROJECT_PATH}"
+    PROJECT_PATH="$1"
     OLD_VERSION='*'
 
     # If we need build_numbers added, uncomment the next. 

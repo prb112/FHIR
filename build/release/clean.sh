@@ -30,7 +30,7 @@ popd > /dev/null
 # build_clean - Build source from a Project PATH
 # Reference https://maven.apache.org/plugins/maven-clean-plugin/
 function build_clean { 
-    announce "${FUNCNAME[0]} - start"
+    announce "${FUNCNAME[0]}"
 
     PROJECT_PATH="$1"
 

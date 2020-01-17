@@ -39,7 +39,7 @@ jobs:
         bash build/release/bootstrap-env.sh
         # Only output this if you are debugging... cat ./build/release/bootstrap.env
         . ./build/release/bootstrap.env
-        env
+        # env
         bash build/release/version.sh
         bash build/release/clean.sh
         bash build/release/build.sh

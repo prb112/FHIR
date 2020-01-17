@@ -62,7 +62,14 @@ function check_and_fail {
     else 
         # Output log on failure only 
         OUT_LOG="${3}"
-        cat "${OUT_LOG}"
+
+        if [ ! -z "${OUT_LOG}" ]
+        then 
+            if [ -f ${OUT_LOG} ]
+            then 
+                cat "${OUT_LOG}"
+            fi 
+        fi 
 
         echo "Fail -> METHOD [${2}]"
         exit -1;

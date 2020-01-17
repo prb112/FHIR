@@ -35,13 +35,11 @@ popd > /dev/null
 # use versions:revert - option to revert the change. 
 function set_version { 
     announce "${FUNCNAME[0]} - started - ${PROJECT_PATH}"
-    PROJECT_PATH="$1"
+    PROJECT_PATH="$0"
     OLD_VERSION='*'
 
     # If we need build_numbers added, uncomment the next. 
-    #BUILD_NUMBER="-"`date +%s`
     NEW_VERSION="${BUILD_ID}"
-    #echo "[VERSION SET - START] - ${NEW_VERSION} - [`date`]"
     mvn ${THREAD_COUNT} versions:set -ntu -B -f ${PROJECT_PATH} -DoldVersion=${OLD_VERSION} -DnewVersion=${NEW_VERSION}
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }

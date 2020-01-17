@@ -29,9 +29,9 @@ function set_build_variable {
     then 
         if [ ! -z "${3}" ]
         then 
-            export $1=$3
+            outputEnvironment "${1}=${3}"
         else
-            export $1=$2
+            outputEnvironment "${1}=${2}"
         fi 
         debugging "Environment Variable is set [${1}] as [$(env | grep -i ${1})]"
     else 
@@ -52,17 +52,21 @@ function set_build_type {
             # not empty and is tag build
             if [[ "${1}" == *"RC"* ]]
             then
-                export BUILD_TYPE="RELEASE_CANDIDATE"
+                outputEnvironment "BUILD_TYPE=\"RELEASE_CANDIDATE\"" 
             else
-                export BUILD_TYPE="RELEASE"
+                outputEnvironment "BUILD_TYPE=\"RELEASE\"" 
             fi
             set_build_variable BUILD_ID "" "${1}"
         fi
     else 
         # SNAPSHOT build
         set_build_variable BUILD_ID "" "Integration_${2}_${3}"
-        export BUILD_TYPE="SNAPSHOT"
+        outputEnvironment "export BUILD_TYPE=\"SNAPSHOT\"" 
     fi
+}
+
+function outputEnvironment { 
+    echo "${1}" >> bootstrap.env
 }
 
 ###############################################################################
@@ -124,13 +128,12 @@ set_build_type "-${TRAVIS_TAG}-" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_BRANCH}"
 # - Check type for LOCAL build
 set_build_type "-${FHIR_GIT_TAG}-" "${FHIR_GIT_BUILD_NUMBER}" "${FHIR_GIT_BRANCH}"
 
-export BUILD_DISPLAY_NAME="${BUILD_ID}"
+echo BUILD_DISPLAY_NAME="${BUILD_ID}" >> bootstrap.env
 
 # Outputting JAVA_HOME
 debugging "JAVA_HOME is [${JAVA_HOME}]"
 
 # Reset to Original Directory
 popd > /dev/null
-env > bootstrap.env
 
 # EOF

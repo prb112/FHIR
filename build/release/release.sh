@@ -6,25 +6,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-# Release enables tag release with 
-# - Travis CI
-# - GitHub Actions 
-
-# if release-
-
-# if snapshot-
-
-# clean
-
-# set release versions 
-
-# source
-
-# javadoc
-
-
-
-
+# build 
 
 # site
 mvn site -f fhir-parent

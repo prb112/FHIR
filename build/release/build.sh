@@ -48,7 +48,14 @@ function _mvn {
 function build_all { 
     _mvn 'fhir-tools' '-Pdeploy-bintray,fhir-javadocs'
     _mvn 'fhir-examples' '-Pdeploy-bintray,fhir-javadocs'
-    _mvn 'fhir-parent' '-Pdeploy-bintray,fhir-javadocs'
+
+    PROFILES_ARR=(integration)
+    PROFILES_ARR+=(model-all-tests)
+    PROFILES_ARR+=(validation-all-tests)
+    PROFILES_ARR+=(search-all-tests)
+    PROFILES_ARR+=(jdbc-all-tests)
+    PROFILES=$(IFS=, ; echo "${PROFILES_ARR[*]}")
+    _mvn 'fhir-parent' '-Pdeploy-bintray,fhir-javadocs,${PROFILES}'
 }
 
 ###############################################################################

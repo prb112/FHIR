@@ -33,9 +33,9 @@ function set_build_variable {
         else
             outputEnvironment "${1}=${2}"
         fi 
-        debugging "Environment Variable is set [${1}] as [$(env | grep -i ${1})]"
+        debugging "Environment Variable is set [${1}]"
     else 
-        debugging "Environment Variable is already set [${1}] as [$(env | grep -i ${1})]"
+        debugging "Environment Variable is already set [${1}]"
     fi
     
 }
@@ -66,7 +66,7 @@ function set_build_type {
 }
 
 function outputEnvironment { 
-    echo "${1}" >> bootstrap.env
+    echo "export ${1}" >> bootstrap.env
 }
 
 ###############################################################################
@@ -104,7 +104,6 @@ fi
 
 ###############################################################################
 # wipe out existing bootstrap.env files 
-
 if [ -f bootstrap.env ]
 then 
     rm -f bootstrap.env

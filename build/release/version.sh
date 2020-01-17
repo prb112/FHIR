@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eu -o pipefail
+
 ###############################################################################
 # (C) Copyright IBM Corp. 2020
 #
@@ -34,9 +36,10 @@ popd > /dev/null
 # Reference https://www.mojohaus.org/versions-maven-plugin/set-mojo.html
 # use versions:revert - option to revert the change. 
 function set_version { 
-    announce "${FUNCNAME[0]} - ${PROJECT_PATH}"
     PROJECT_PATH="$1"
     OLD_VERSION='*'
+
+    announce "${FUNCNAME[0]} - ${PROJECT_PATH}"
 
     # If we need build_numbers added, uncomment the next. 
     NEW_VERSION="${BUILD_VERSION}"

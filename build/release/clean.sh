@@ -16,6 +16,7 @@ cd "$(dirname ${BASH_SOURCE[0]})"
 
 # Import Scripts
 source "$(dirname '$0')/logging.sh"
+source "$(dirname '$0')/release.properties"
 
 # Basic information
 SCRIPT_NAME="$(basename ${BASH_SOURCE[0]})"

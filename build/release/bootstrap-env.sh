@@ -47,7 +47,7 @@ function set_build_variable {
 function set_build_type {
     if [ "${BUILD_ID}" == *"Integration"* ] || [ -z "${BUILD_ID}" ]
     then
-        if [ ! [ "${1}" == "--" ] ]
+        if [ "${1}" != "--" ]
         then 
             # not empty and is tag build
             if [[ "${1}" == *"RC"* ]]
@@ -101,7 +101,7 @@ fi
 ###############################################################################
 # Setup Default Variables
 set_build_variable BUILD_VERSION "" "${TRAVIS_TAG}"
-set_build_variable BUILD_VERSION "development" "$(echo ${GITHUB_REF} | sed 's|refs/heads/||g')"
+set_build_variable BUILD_VERSION "development" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
 
 set_build_variable GIT_BRANCH "${TRAVIS_PULL_REQUEST_BRANCH}" "${TRAVIS_BRANCH}"
 set_build_variable GIT_BRANCH "${GITHUB_REF}" "${GITHUB_REF}"
@@ -124,7 +124,7 @@ set_build_type "-${TRAVIS_TAG}-" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_BRANCH}"
 # - Check type for LOCAL build
 set_build_type "-${FHIR_GIT_TAG}-" "${FHIR_GIT_BUILD_NUMBER}" "${FHIR_GIT_BRANCH}"
 
-export BUILD_DISPLAY_NAME = "${BUILD_ID}"
+export BUILD_DISPLAY_NAME="${BUILD_ID}"
 
 # Outputting JAVA_HOME
 debugging "JAVA_HOME is [${JAVA_HOME}]"

@@ -16,6 +16,8 @@ jobs:
         java: [ 'openjdk11' ]
       fail-fast: false
     steps:
+    - name: Setup Graphviz environment
+      uses: kamiazya/setup-graphviz@v1
     - name: Grab the Master Branch
       uses: actions/checkout@v2
       with:

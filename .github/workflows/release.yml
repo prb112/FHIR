@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - '*.*'
+    paths-ignore:
+    - 'docs/**'
+    - '.github/site.yml'
+
+jobs:
+  release-on-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 'openjdk8', 'openjdk11' ]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up OpenJDK
+      uses: joschi/setup-jdk@v1
+      with:
+        java-version: ${{ matrix.java }}
+    - name: Build and Release Tag
+    - name: Build parent with tests
+      env:
+        BASE: origin/${{ github['base_ref'] }}
+      run: |
+        bash build/release/bootstrap-env.sh

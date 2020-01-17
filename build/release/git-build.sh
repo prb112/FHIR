@@ -114,27 +114,6 @@ function build_install {
     check_and_fail $? "build_install - ${PROJECT_PATH}" ${LOG_DIR}/${PROJECT_NAME}-build_install.log
 }
 
-# build_security_check - Security check from a Project PATH
-# Reference https://github.com/victims/maven-security-versions
-function build_security_check { 
-    announce "${FUNCNAME[0]}" "${LOG_DIR}/${PROJECT_NAME}-build_security_check.log"
-
-    PROJECT_PATH="$1"
-    LOGS="${LOG_DIR}/${PROJECT_NAME}-build_security_check.log"
-    echo "[Starting the check of security-versions] [`date`]"
-    echo "- logging to ${LOGS}"
-    mvn ${THREAD_COUNT} com.redhat.victims.maven:security-versions:check -f ${PROJECT_PATH} --log-file ${LOGS}
-    check_and_fail $? "build_security_check - ${PROJECT_PATH}" ${LOGS}
-
-    echo "[Finished the check of security-versions] [`date`]"
-    echo "[Report]: "
-    for VULNERABLE in `cat ${LOGS} |  grep "is vulnerable to"`
-    do
-        echo "REPORTED VULNERABLITY"
-        echo "${VULNERABLE}"
-    done
-    echo "[Done Report]"
-}
 
 # files_changed - between two branches or two tags
 # Parameters: 
@@ -229,41 +208,7 @@ function set_version {
     check_and_fail $? "set_version - ${PROJECT_PATH}"
 }
 
-# sync_to_maven_central - syncs from bintray to maven central 
-# Parameters: 
-#   USER
-#   API_KEY
-#   SUBJECT
-#   REPO_NAME
-#   PKG_NAME
-#   PKG_VERSION
-# 
-# Reference https://github.com/IBM/java-sdk-core/blob/master/build/sync2MC.sh
-function sync_to_maven_central { 
-    announce "${FUNCNAME[0]}" "sync_to_maven_central.log"
 
-    USER=""
-    API_KEY=""
-    SUBJECT=""
-    REPO_NAME=""
-    PKG_NAME=""
-    PKG_VERSION=""
-
-    URL_STRING="https://api.bintray.com/maven_central_sync/${SUBJECT}/${REPO_NAME}/${PKG_NAME}/versions/${PKG_VERSION}"
-    if [ $# -lt 6 ]
-    then
-        echo "
-            Syntax:  
-            $0 <bintray-user> <bintray-apikey> <bintray-repo-owner> <bintray-reponame> <bintray-packagename> <bintray-packageversion>>
-            Example:
-            $0 user1 A1098765 my-bintray-org my-bintray-repo1 my-bintray-package 0.0.1
-        "
-    else 
-        BASIC_AUTH="${USER}:${API_KEY}"
-        echo "Executing curl command..."
-        curl -X POST --data '{ "close": "1" }' -H "Content-Type: application/json" -L -k --user ${BASIC_AUTH} ${URL_STRING}
-    fi
-}
 
 # shortcut_doc_only_update - shortcuts the build if there are only files 
 function shortcut_doc_only_update {
@@ -277,142 +222,9 @@ function build_type {
     TAGS=`git tag --list`
 }
 
-# diagnostic_details - output details
-# - putting it into the build logs directory. 
-function diagnostic_details {
-    echo "Outputing diagnostic detail: "
-    env > build/logs/diag.log
-    df >> build/logs/diag.log
-    ulimit -a >> build/logs/diag.log
-}
 
-# mvn_setup - setup for travis only 
-function mvn_setup {
-    if env | grep TRAVIS 
-    then 
-        # Not all JVMs support - -XX:MaxPermSize=512m 
-        echo "MAVEN_OPTS='-Xmx2G -Xms1G -Djava.awt.headless=true '" > ~/.mavenrc
-    fi
-}
 
-# check_and_fail - fails if the build is in a bad shape
-function check_and_fail { 
-    RC="${1}"
-    if [ ${RC} == "0" ]
-    then 
-        echo "Success - [${2}]"
-    else 
-        # Output log on failure only 
-        OUT_LOG="${3}"
-        cat "${OUT_LOG}"
 
-        echo "Fail -> METHOD [${2}]"
-        exit -1;
-    fi 
-    
-}
-
-# announce - alerts to the start of a project
-function announce { 
-    PROJECT_NAME="${1}"
-    LOG_NAME="${2}"
-    
-    echo "Starting - [${PROJECT_NAME}]"
-    echo " -> logging out to file in '${LOG_NAME}'"
-
-}
-
-# header_line - output a line
-function header_line { 
-    echo "--------------------------------------------"
-}
-
-# regression - on jdks without creating yet another build. 
-# - OpenJDK 8, OpenJDK 11 - from https://adoptopenjdk.net/.
-#   Skipped - 'openjdk11' is the default in `.travis.yml`
-# - IBM SDK, Java Technology Edition, Version 8. 8.0.5.40
-#   JDKS_VERS='https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/baseline/baseline_version.txt'
-#   JDKS_META='https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/sdk/linux/x86_64/index.yml'
-# 
-# Reference -> https://github.com/michaelklishin/jdk_switcher
-#
-# colon is in the following so we can skip (if already done, or provide an unexpected outcome)
-JDKS=('openjdk11:skip', 'openjdk8:skip', 'ibmjdk8:ibm' )
-function regression { 
-    echo "Starting the REGRESSION tests on specified jdks"
-    
-    FILE='/home/travis/ibm-java/ibm-java-archive.bin'
-
-    for JDK in "${JDKS[@]}"
-    do 
-        JDK_INTERIM=`echo $JDK | sed 's|:| |g' | awk '{print $1}'`
-        JDK_TYPE=`echo $JDK | sed 's|:| |g' | awk '{print $2}'`
-    
-        if [[ "${JDK_TYPE}" = "default" ]]
-        then 
-            echo "AdoptOpenJDK JDK -> ${JDK_INTERIM}"
-            #jdk_switcher use $JDK_INTERIM
-        elif [[ "${JDK_TYPE}" = "ibm" ]]
-        then 
-            echo "IBM JDK -> ${JDK_INTERIM}"
-            
-            # Setup Repsonse.properties
-            echo "INSTALLER_UI=silent" > /home/travis/response.properties
-            echo "USER_INSTALL_DIR=/home/travis/ibm-java/java80" >> /home/travis/response.properties
-            echo "LICENSE_ACCEPTED=TRUE" >> /home/travis/response.properties
-            
-            chmod +x ${FILE}
-
-            # setup directory and install 
-            mkdir -p /home/travis/ibm-java/java80
-            ${FILE} -i silent -f /home/travis/response.properties 
-            
-            export JAVA_HOME="${USER_INSTALL_DIR}"
-            export PATH="${JAVA_HOME}/bin:${PATH}"
-        fi
-       
-        header_line
-    done 
-}
-
-# downloads the jdk 
-# - SHA_SUM - the sha_sum in the trusted variable that is passed in here. 
-# - DOWNLOAD_URI - uri
-#
-# Example:
-# 1.8.0_sr5fp40:
-#    uri: https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/8.0.5.40/linux/x86_64/ibm-java-sdk-8.0-5.40-x86_64-archive.bin
-#    sha256sum: bc53faf476655e565f965dab3db37f9258bfc16bb8c5352c93d43d53860b79d3
-# Originally from https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/sdk/linux/x86_64/index.yml 
-function download {
-    announce "${FUNCNAME[0]}"
-
-    SHA_SUM="$1"
-    DOWNLOAD_URI="$2"
-    
-    # Create the directory
-    mkdir -p /home/travis/ibm-java
-
-    FILE='/home/travis/ibm-java/ibm-java-archive.bin'
-    if [ -f "${FILE}" ]
-    then 
-        # check sha256sum in the cached file
-        LOCAL_SHA_SUM="$(sha256sum ${FILE} | awk '{print $1}')"
-        echo "ACTUAL_SHA_SUM -> ${LOCAL_SHA_SUM}"
-        echo "EXPECTED_SHA_SUM -> ${SHA_SUM}"
-        if [ "${SHA_SUM}" != "${LOCAL_SHA_SUM}" ]
-        then
-            curl -o ${FILE} "${DOWNLOAD_URI}"
-        fi
-
-        # make sure it's executable. 
-        chmod +x ${FILE}
-
-    else 
-        curl -o ${FILE} "${DOWNLOAD_URI}"
-    fi 
-
-}
 
 # comment_on_pull_request - adds a comment on the pull request.
 # the token is encrypted following https://medium.com/@preslavrachev/using-travis-for-secure-building-and-deployment-to-github-5a97afcac113
@@ -498,69 +310,7 @@ function comment_on_pull_request_with_log {
     fi
 }
 
-###############################################################################
-# Setup for the script/build
 
-# makes sure there is a gitignore which puts the log in this folder. 
-GIT_IGNORE='build/.gitignore'
-if [ ! -f ${GIT_IGNORE} ]
-then 
-    echo 'logs/' > ${GIT_IGNORE} 
-fi
-
-# create the logs directory (which is now ignored)
-LOG_DIR='build/logs'
-if [ ! -d  $LOG_DIR ]
-then 
-    mkdir -p ${LOG_DIR}
-fi
-
-# Threads that are allowed to run
-# which are passed in with BUILD_THREAD
-#
-# Examples: 
-#   1C (1Core)
-#   4  (4 Threads)
-THREAD_COUNT=
-if [ ! -z "${BUILD_THREAD}" ]
-then 
-    THREAD_COUNT="-T ${BUILD_THREAD}"
-fi
-
-# Our original build was on JENKINS
-# Jenkins made these variables part of the build context 
-# Travis is a bit different, so we clean it up here. 
-# - note publish.dir is also a valid 
-if [ -z "${BUILD_ID}" ]
-then 
-    BUILD_ID="${TRAVIS_BUILD_ID}"
-fi
-
-if [ -z "${GIT_BRANCH}" ]
-then 
-    if echo "${TRAVIS_PULL_REQUEST_BRANCH}" | grep false 
-    then 
-        GIT_BRANCH="${TRAVIS_BRANCH}-"
-    else 
-        GIT_BRANCH="${TRAVIS_PULL_REQUEST_BRANCH}"
-    fi
-fi
-
-if [ -z "${GIT_COMMIT}" ]
-then 
-    GIT_COMMIT="${TRAVIS_COMMIT}"
-fi
-
-if [ -z "${GIT_URL}" ]
-then 
-    # choosing to use the repo slug
-    GIT_URL="${TRAVIS_REPO_SLUG}"
-fi
-
-if [ -z "${BUILD_DISPLAY_NAME}" ]
-then 
-    BUILD_DISPLAY_NAME="${TRAVIS_BUILD_ID}"
-fi
 
 ###############################################################################
 # Menu

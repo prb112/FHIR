@@ -37,7 +37,7 @@ function code_coverage {
     PROFILES="$2"
 
     # Batch mode without the transfer updates.
-    mvn ${THREAD_COUNT} -ntp -B "${PROFILES}" verify -f ${PROJECT_PATH}
+    mvn ${THREAD_COUNT} -ntp -B "${PROFILES}" test -f ${PROJECT_PATH}
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }
 

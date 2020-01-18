@@ -6,21 +6,38 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-# regression - on jdks without creating yet another build. 
+# regression for IBM Java 
+
+# Store the current directory to reset to
+pushd $(pwd) > /dev/null
+
+# Change to the release directory
+cd "$(dirname ${BASH_SOURCE[0]})"
+
+# Import Scripts
+source "$(dirname '$0')/logging.sh"
+source "$(dirname '$0')/release.properties"
+
+# Basic information
+SCRIPT_NAME="$(basename ${BASH_SOURCE[0]})"
+debugging "Script Name is ${SCRIPT_NAME}"
+
+# Reset to Original Directory
+popd > /dev/null
+
+###############################################################################
+# function declarations:  
+
+# install_for_regression - on jdks without creating yet another build. 
 # - OpenJDK 8, OpenJDK 11 - from https://adoptopenjdk.net/.
-#   Skipped - 'openjdk11' is the default in `.travis.yml`
+#   'openjdk11' is the default in the travis and github actions matrix
 # - IBM SDK, Java Technology Edition, Version 8. 8.0.5.40
 #   JDKS_VERS='https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/baseline/baseline_version.txt'
 #   JDKS_META='https://public.dhe.ibm.com/ibmdl/export/pub/systems/cloud/runtimes/java/meta/sdk/linux/x86_64/index.yml'
-# 
-# Reference -> https://github.com/michaelklishin/jdk_switcher
-#
-# colon is in the following so we can skip (if already done, or provide an unexpected outcome)
-JDKS=('openjdk11:skip', 'openjdk8:skip', 'ibmjdk8:ibm' )
-function regression { 
-    echo "Starting the REGRESSION tests on specified jdks"
-    
-    FILE='/home/travis/ibm-java/ibm-java-archive.bin'
+JDKS=('ibmjdk8:ibm' )
+function install_for_regression { 
+    info "Starting the REGRESSION tests on specified jdks"
+    FILE='~/ibm-java/ibm-java-archive.bin'
 
     for JDK in "${JDKS[@]}"
     do 
@@ -29,27 +46,26 @@ function regression {
     
         if [[ "${JDK_TYPE}" = "default" ]]
         then 
-            echo "AdoptOpenJDK JDK -> ${JDK_INTERIM}"
+            info "AdoptOpenJDK JDK -> ${JDK_INTERIM}"
             #jdk_switcher use $JDK_INTERIM
         elif [[ "${JDK_TYPE}" = "ibm" ]]
         then 
-            echo "IBM JDK -> ${JDK_INTERIM}"
+            info "IBM JDK -> ${JDK_INTERIM}"
             
             # Setup Repsonse.properties
-            echo "INSTALLER_UI=silent" > /home/travis/response.properties
-            echo "USER_INSTALL_DIR=/home/travis/ibm-java/java80" >> /home/travis/response.properties
-            echo "LICENSE_ACCEPTED=TRUE" >> /home/travis/response.properties
+            info "INSTALLER_UI=silent" > ~/response.properties
+            info "USER_INSTALL_DIR=~/ibm-java/${JDK_ITERIM}" >> ~/response.properties
+            info "LICENSE_ACCEPTED=TRUE" >> ~/response.properties
             
             chmod +x ${FILE}
 
             # setup directory and install 
-            mkdir -p /home/travis/ibm-java/java80
-            ${FILE} -i silent -f /home/travis/response.properties 
+            mkdir -p ~/ibm-java/java80
+            ${FILE} -i silent -f ~/response.properties 
             
-            export JAVA_HOME="${USER_INSTALL_DIR}"
+            export JAVA_HOME="~/ibm-java/${JDK_ITERIM}"
             export PATH="${JAVA_HOME}/bin:${PATH}"
         fi
-       
         header_line
     done 
 }
@@ -70,15 +86,15 @@ function download {
     DOWNLOAD_URI="$2"
     
     # Create the directory
-    mkdir -p /home/travis/ibm-java
+    mkdir -p ~/ibm-java
 
-    FILE='/home/travis/ibm-java/ibm-java-archive.bin'
+    FILE='~/ibm-java/ibm-java-archive.bin'
     if [ -f "${FILE}" ]
     then 
         # check sha256sum in the cached file
         LOCAL_SHA_SUM="$(sha256sum ${FILE} | awk '{print $1}')"
-        echo "ACTUAL_SHA_SUM -> ${LOCAL_SHA_SUM}"
-        echo "EXPECTED_SHA_SUM -> ${SHA_SUM}"
+        info "ACTUAL_SHA_SUM -> ${LOCAL_SHA_SUM}"
+        info "EXPECTED_SHA_SUM -> ${SHA_SUM}"
         if [ "${SHA_SUM}" != "${LOCAL_SHA_SUM}" ]
         then
             curl -o ${FILE} "${DOWNLOAD_URI}"
@@ -86,11 +102,15 @@ function download {
 
         # make sure it's executable. 
         chmod +x ${FILE}
-
     else 
         curl -o ${FILE} "${DOWNLOAD_URI}"
     fi 
-
 }
+
+download
+install_for_regression
+regression
+
+mvn verify -f fhir-parent
 
 # EOF

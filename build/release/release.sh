@@ -6,15 +6,13 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-# site
-mvn site -f fhir-parent
+# note the site is deployed in a separate job which generates the documents and javadocs. 
 
+#
 # deploy
 
 
 # Synch to Maven Central 
-
-# regression
 
 # catch any exception 
 

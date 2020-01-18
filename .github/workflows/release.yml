@@ -42,10 +42,13 @@ jobs:
         bash build/release/clean.sh
         bash build/release/build.sh
         bash build/release/code-coverage.sh
+        # only covers unit tests (not server integration tests)
+        # bash build/release/ibm-java-regression.sh
+        bash build/release/diagnostics.sh
+        bash build/release/release.sh
     - name: Gather error logs
       if: failure()
       run: |
-        echo gather logs
         . ./build/release/bootstrap.env
         bash build/release/diagnostics.sh
     - name: Upload logs

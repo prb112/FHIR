@@ -37,10 +37,20 @@ jobs:
         JAVA_HOME: /opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/
       run: |
         bash build/release/bootstrap-env.sh
-        # Only output this if you are debugging... cat ./build/release/bootstrap.env
         . ./build/release/bootstrap.env
-        # env
         bash build/release/version.sh
         bash build/release/clean.sh
-        bash build/release/build.sh || true 
-        cat /home/runner/work/FHIR/FHIR/fhir-core/target/surefire-reports/*
+        bash build/release/build.sh
+        bash build/release/code-coverage.sh
+    - name: Gather error logs
+      if: failure()
+      run: |
+        echo gather logs
+        . ./build/release/bootstrap.env
+        bash build/release/diagnostics.sh
+    - name: Upload logs
+      if: always()
+      uses: actions/upload-artifact@master
+      with:
+        name: release-tag-${{ matrix.java }}
+        path: build/logs/release-artifacts.zip

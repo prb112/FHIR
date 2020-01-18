@@ -11,13 +11,12 @@ mvn site -f fhir-parent
 
 # deploy
 
-# jacoco
 
 # Synch to Maven Central 
 
 # regression
 
 # catch any exception 
-diagnostic_details
+
 
 # EOF

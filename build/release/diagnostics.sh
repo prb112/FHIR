@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+###############################################################################
+# (C) Copyright IBM Corp. 2020
+#
+# SPDX-License-Identifier: Apache-2.0
+###############################################################################
+
+# gather diagnostics 
+
+# Store the current directory to reset to
+pushd $(pwd) > /dev/null
+
+# Change to the release directory
+cd "$(dirname ${BASH_SOURCE[0]})"
+
+# Import Scripts
+source "$(dirname '$0')/logging.sh"
+source "$(dirname '$0')/release.properties"
+
+# Basic information
+SCRIPT_NAME="$(basename ${BASH_SOURCE[0]})"
+debugging "Script Name is ${SCRIPT_NAME}"
+
+# Reset to Original Directory
+popd > /dev/null
+
+###############################################################################
+
+diagnostic_details > diagnostic_details.log
+tar -czf release-logs.tgz $(find . -iname diagnostic_details.log -or -iname surefire-reports -or -iname jacoco.exec -or -iname jacoco-aggregate -or -iname fhir-server-distribution.zip)
+
+# EOF

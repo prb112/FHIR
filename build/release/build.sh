@@ -39,7 +39,7 @@ function _mvn {
     PROFILES="$2"
 
     mvn ${THREAD_COUNT} "${PROFILES}" -ntp -B source:jar source:test-jar javadoc:jar install \
-        -DadditionalJOption=-Xdoclint:none -f ${PROJECT_PATH}
+        -DadditionalJOption=-Xdoclint:none -f ${PROJECT_PATH} -X
 
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }
@@ -55,7 +55,7 @@ function build_all {
     PROFILES_ARR+=(search-all-tests)
     PROFILES_ARR+=(jdbc-all-tests)
     PROFILES=$(IFS=, ; echo "${PROFILES_ARR[*]}")
-    _mvn 'fhir-parent' "-Pdeploy-bintray,fhir-javadocs,${PROFILES} -X"
+    _mvn 'fhir-parent' "-Pdeploy-bintray,fhir-javadocs,${PROFILES}"
 }
 
 ###############################################################################

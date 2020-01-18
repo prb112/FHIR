@@ -73,9 +73,10 @@ function outputEnvironment {
 # Setup Maven Options 
 
 # Not all JVMs support - -XX:MaxPermSize=512m (don't set it)
+# -Xmx2G -Xms1G 
 if [ ! -f ~/.mavenrc ]
 then 
-    echo "MAVEN_OPTS='-Xmx2G -Xms1G -Djava.awt.headless=true '" > ~/.mavenrc
+    echo "MAVEN_OPTS='-Djava.awt.headless=true '" > ~/.mavenrc
 fi
 
 # Threads that are allowed to run

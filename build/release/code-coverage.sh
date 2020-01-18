@@ -51,8 +51,7 @@ else
 fi
 
 # build up the list of test profiles to execute and call code coverage
-PROFILES_ARR=(integration)
-PROFILES_ARR+=(model-all-tests)
+PROFILES_ARR=(model-all-tests)
 PROFILES_ARR+=(validation-all-tests)
 PROFILES_ARR+=(search-all-tests)
 PROFILES_ARR+=(jdbc-all-tests)

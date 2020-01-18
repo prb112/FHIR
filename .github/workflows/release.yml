@@ -42,4 +42,5 @@ jobs:
         # env
         bash build/release/version.sh
         bash build/release/clean.sh
-        bash build/release/build.sh
+        bash build/release/build.sh || true 
+        cat /home/runner/work/FHIR/FHIR/fhir-core/target/surefire-reports/*

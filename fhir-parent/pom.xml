@@ -76,7 +76,7 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>fhir-examples</artifactId>
-                <version>${fhir-examples.properties}</version>
+                <version>4.0.1-SNAPSHOT</version>
                 <scope>test</scope>
             </dependency>
             <dependency>

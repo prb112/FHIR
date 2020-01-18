@@ -55,8 +55,9 @@ function change_all_versions {
     mvn ${THREAD_COUNT} clean package install -ntp -B -N -f fhir-parent 
     set_version "fhir-parent" 
 
-    mvn -ntp -B versions:update-property -Dproperty='fhir-examples.properties' -DnewVersion="${BUILD_VERSION}" -f fhir-parent
-    mvn -ntp -B versions:update-property -Dproperty='fhir-tools.properties' -DnewVersion="${BUILD_VERSION}" -f fhir-parent
+    # Reconcile the versions. 
+     mvn -ntp -B org.codehaus.mojo:versions-maven-plugin:2.7:set-property -Dproperty=fhir-examples.properties -DnewVersion=4.0.23 -f fhir-parent
+      mvn -ntp -B org.codehaus.mojo:versions-maven-plugin:2.7:set-property -Dproperty=fhir-tools.properties -DnewVersion=4.0.23 -f fhir-parent
 }
 
 ###############################################################################

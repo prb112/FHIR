@@ -65,7 +65,7 @@
                 <plugin>
                     <groupId>com.ibm.fhir</groupId>
                     <artifactId>fhir-tools</artifactId>
-                    <version>${project.version}</version>
+                    <version>${fhir-tools.properties}</version>
                     <dependencies>
                         <!-- javax.json implementation -->
                         <dependency>

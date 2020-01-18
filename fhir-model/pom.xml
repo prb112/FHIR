@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.ibm.fhir</groupId>
         <artifactId>fhir-parent</artifactId>
-        <version>4.0.23</version>
+        <version>4.0.1-SNAPSHOT</version>
         <relativePath>../fhir-parent</relativePath>
     </parent>
 
@@ -65,7 +65,7 @@
                 <plugin>
                     <groupId>com.ibm.fhir</groupId>
                     <artifactId>fhir-tools</artifactId>
-                    <version>${fhir-tools.properties}</version>
+                    <version>${project.version}</version>
                     <dependencies>
                         <!-- javax.json implementation -->
                         <dependency>

@@ -56,7 +56,7 @@ function build_all {
     PROFILES_ARR+=(search-all-tests)
     PROFILES_ARR+=(jdbc-all-tests)
     PROFILES=$(IFS=, ; echo "${PROFILES_ARR[*]}")
-    _mvn 'fhir-parent' "-Pdeploy-bintray,fhir-javadocs,${PROFILES}"
+    _mvn 'fhir-parent' "-Pdeploy-bintray,fhir-javadocs,fhir-validation-distribution,${PROFILES}"
 }
 
 ###############################################################################

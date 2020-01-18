@@ -38,8 +38,8 @@ function _mvn {
     PROJECT_PATH="$1"
     PROFILES="$2"
 
-    #  -ntp -B
-    mvn ${THREAD_COUNT} "${PROFILES}" source:jar source:test-jar javadoc:jar install \
+    # Batch mode without the transfer updates.
+    mvn ${THREAD_COUNT} -ntp -B "${PROFILES}" source:jar source:test-jar javadoc:jar install \
         -DadditionalJOption=-Xdoclint:none -f ${PROJECT_PATH} -X
 
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"

@@ -59,7 +59,7 @@ case $BUILD_TYPE in
         header_line
     ;;
     RELEASE) 
-        TYPE="release"
+        TYPE="releases"
         deploy_bintray "fhir-examples" "${TYPE}"
         deploy_bintray "fhir-tools" "${TYPE}"
         deploy_bintray "fhir-parent" "${TYPE}"

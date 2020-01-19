@@ -47,7 +47,8 @@ jobs:
         # only covers unit tests (not server integration tests)
         # bash build/release/ibm-java-regression.sh
         bash build/release/release.sh
-        bash build/release/synch-maven-central.sh
+        bash build/release/sync-maven-central.sh
+        bash build/release/release-commit-details.sh
         bash build/release/diagnostics.sh
     - name: Gather error logs
       if: failure()

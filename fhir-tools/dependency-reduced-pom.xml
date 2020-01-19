@@ -4,7 +4,7 @@
   <groupId>com.ibm.fhir</groupId>
   <artifactId>fhir-tools</artifactId>
   <packaging>maven-plugin</packaging>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.1-SNAPSHOT</version>
   <build>
     <pluginManagement>
       <plugins>
@@ -188,80 +188,124 @@
       <build>
         <plugins>
           <plugin>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.8.2</version>
+            <executions>
+              <execution>
+                <id>default-site</id>
+                <phase>site</phase>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>/Users/paulbastide/git/wffh/prb112/FHIR/fhir-tools/target/site</outputDirectory>
+                  <reportPlugins>
+                    <reportPlugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-project-info-reports-plugin</artifactId>
+                    </reportPlugin>
+                  </reportPlugins>
+                </configuration>
+              </execution>
+              <execution>
+                <id>default-deploy</id>
+                <phase>site-deploy</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>/Users/paulbastide/git/wffh/prb112/FHIR/fhir-tools/target/site</outputDirectory>
+                  <reportPlugins>
+                    <reportPlugin>
+                      <groupId>org.apache.maven.plugins</groupId>
+                      <artifactId>maven-project-info-reports-plugin</artifactId>
+                    </reportPlugin>
+                  </reportPlugins>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <outputDirectory>/Users/paulbastide/git/wffh/prb112/FHIR/fhir-tools/target/site</outputDirectory>
+              <reportPlugins>
+                <reportPlugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-project-info-reports-plugin</artifactId>
+                </reportPlugin>
+              </reportPlugins>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.9</version>
+          </plugin>
+          <plugin>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>3.1.1</version>
             <executions>
               <execution>
-                <id>aggregate</id>
+                <id>attach-javadocs</id>
                 <phase>site</phase>
                 <goals>
                   <goal>javadoc-no-fork</goal>
                   <goal>test-javadoc-no-fork</goal>
                 </goals>
                 <configuration>
-                  <verbose>false</verbose>
+                  <source>8</source>
+                  <verbose>true</verbose>
                   <doclint>none</doclint>
                   <additionalparam>-Xdoclint:none</additionalparam>
-                  <minmemory>128m</minmemory>
+                  <minmemory>512m</minmemory>
                   <maxmemory>1g</maxmemory>
-                  <archive>
-                    <manifestEntries>
-                      <Automatic-Module-Name>com.ibm.fhir</Automatic-Module-Name>
-                    </manifestEntries>
-                  </archive>
-                  <destDir>target/apidocs/fhir-tools</destDir>
                   <additionalOptions>
                     <additionalOption>--frames</additionalOption>
+                    <additionalOption>--no-module-directories</additionalOption>
                   </additionalOptions>
-                  <bottom>Copyright 2019, &lt;a href="http://www.ibm.com"&gt;IBM Corporation&lt;a&gt;</bottom>
+                  <header>&lt;a href="/FHIR" class="bx--header__name" target="_parent"&gt;&lt;span&gt;IBM&lt;/span&gt;&amp;nbsp;FHIR®&amp;nbsp;Server&lt;/a&gt;</header>
+                  <bottom>Copyright 2019. &lt;a href="http://www.ibm.com"&gt;IBM Corporation&lt;a&gt;&lt;br&gt;&lt;/br&gt;FHIR&amp;reg; is the registered trademark of HL7 and is used with the permission of HL7.</bottom>
                   <author>false</author>
-                  <detectJavaApiLink>false</detectJavaApiLink>
-                </configuration>
-              </execution>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <verbose>false</verbose>
-                  <doclint>none</doclint>
-                  <additionalparam>-Xdoclint:none</additionalparam>
-                  <minmemory>128m</minmemory>
-                  <maxmemory>1g</maxmemory>
-                  <archive>
-                    <manifestEntries>
-                      <Automatic-Module-Name>com.ibm.fhir</Automatic-Module-Name>
-                    </manifestEntries>
-                  </archive>
-                  <destDir>target/apidocs/fhir-tools</destDir>
-                  <additionalOptions>
-                    <additionalOption>--frames</additionalOption>
-                  </additionalOptions>
-                  <bottom>Copyright 2019, &lt;a href="http://www.ibm.com"&gt;IBM Corporation&lt;a&gt;</bottom>
-                  <author>false</author>
-                  <detectJavaApiLink>false</detectJavaApiLink>
+                  <stylesheetfile>/Users/paulbastide/git/wffh/prb112/FHIR/fhir-tools/target/../../fhir-parent/src/javadocs/stylesheet.css</stylesheetfile>
+                  <docletArtifact>
+                    <groupId>nl.talsmasoftware</groupId>
+                    <artifactId>umldoclet</artifactId>
+                    <version>2.0.5</version>
+                  </docletArtifact>
+                  <doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
+                  <additionalparam>-umlSkipStandardDoclet true
+                                -umlLogLevel DEBUG
+                                -umlImageFormat png</additionalparam>
+                  <nohelp>true</nohelp>
+                  <nodeprecated>true</nodeprecated>
+                  <nodeprecatedlist>true</nodeprecatedlist>
                 </configuration>
               </execution>
             </executions>
             <configuration>
-              <verbose>false</verbose>
+              <source>8</source>
+              <verbose>true</verbose>
               <doclint>none</doclint>
               <additionalparam>-Xdoclint:none</additionalparam>
-              <minmemory>128m</minmemory>
+              <minmemory>512m</minmemory>
               <maxmemory>1g</maxmemory>
-              <archive>
-                <manifestEntries>
-                  <Automatic-Module-Name>com.ibm.fhir</Automatic-Module-Name>
-                </manifestEntries>
-              </archive>
-              <destDir>target/apidocs/fhir-tools</destDir>
               <additionalOptions>
                 <additionalOption>--frames</additionalOption>
+                <additionalOption>--no-module-directories</additionalOption>
               </additionalOptions>
-              <bottom>Copyright 2019, &lt;a href="http://www.ibm.com"&gt;IBM Corporation&lt;a&gt;</bottom>
+              <header>&lt;a href="/FHIR" class="bx--header__name" target="_parent"&gt;&lt;span&gt;IBM&lt;/span&gt;&amp;nbsp;FHIR®&amp;nbsp;Server&lt;/a&gt;</header>
+              <bottom>Copyright 2019. &lt;a href="http://www.ibm.com"&gt;IBM Corporation&lt;a&gt;&lt;br&gt;&lt;/br&gt;FHIR&amp;reg; is the registered trademark of HL7 and is used with the permission of HL7.</bottom>
               <author>false</author>
-              <detectJavaApiLink>false</detectJavaApiLink>
+              <stylesheetfile>/Users/paulbastide/git/wffh/prb112/FHIR/fhir-tools/target/../../fhir-parent/src/javadocs/stylesheet.css</stylesheetfile>
+              <docletArtifact>
+                <groupId>nl.talsmasoftware</groupId>
+                <artifactId>umldoclet</artifactId>
+                <version>2.0.5</version>
+              </docletArtifact>
+              <doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
+              <additionalparam>-umlSkipStandardDoclet true
+                                -umlLogLevel DEBUG
+                                -umlImageFormat png</additionalparam>
+              <nohelp>true</nohelp>
+              <nodeprecated>true</nodeprecated>
+              <nodeprecatedlist>true</nodeprecatedlist>
             </configuration>
           </plugin>
         </plugins>
@@ -335,50 +379,6 @@
           <plugin>
             <artifactId>maven-jar-plugin</artifactId>
             <version>3.1.2</version>
-            <executions>
-              <execution>
-                <id>default-jar</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <configuration>
-                  <archive>
-                    <manifest>
-                      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                      <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                    </manifest>
-                    <manifestEntries>
-                      <Build-Time>20191028-0113</Build-Time>
-                      <Build-Number>${BUILD_ID}</Build-Number>
-                      <Git-Commit>${GIT_COMMIT}</Git-Commit>
-                      <Git-Branch>${GIT_BRANCH}</Git-Branch>
-                      <Git-URL>${GIT_URL}</Git-URL>
-                    </manifestEntries>
-                  </archive>
-                </configuration>
-              </execution>
-              <execution>
-                <goals>
-                  <goal>test-jar</goal>
-                </goals>
-                <configuration>
-                  <archive>
-                    <manifest>
-                      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                      <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                    </manifest>
-                    <manifestEntries>
-                      <Build-Time>20191028-0113</Build-Time>
-                      <Build-Number>${BUILD_ID}</Build-Number>
-                      <Git-Commit>${GIT_COMMIT}</Git-Commit>
-                      <Git-Branch>${GIT_BRANCH}</Git-Branch>
-                      <Git-URL>${GIT_URL}</Git-URL>
-                    </manifestEntries>
-                  </archive>
-                </configuration>
-              </execution>
-            </executions>
             <configuration>
               <archive>
                 <manifest>
@@ -386,7 +386,7 @@
                   <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                 </manifest>
                 <manifestEntries>
-                  <Build-Time>20191028-0113</Build-Time>
+                  <Build-Time>${maven.build.timestamp}</Build-Time>
                   <Build-Number>${BUILD_ID}</Build-Number>
                   <Git-Commit>${GIT_COMMIT}</Git-Commit>
                   <Git-Branch>${GIT_BRANCH}</Git-Branch>

@@ -52,9 +52,11 @@ function set_build_type {
             # not empty and is tag build
             if [[ "${1}" == *"RC"* ]]
             then
-                outputEnvironment "BUILD_TYPE=\"RELEASE_CANDIDATE\"" 
+                outputEnvironment "export BUILD_TYPE=\"RELEASE_CANDIDATE\""
+                info "Build_Type is RELEASE_CANDIDATE"
             else
-                outputEnvironment "BUILD_TYPE=\"RELEASE\"" 
+                outputEnvironment "export BUILD_TYPE=\"RELEASE\"" 
+                info "Build_Type is RELEASE"
             fi
             set_build_variable BUILD_ID "" "${1}"
         fi

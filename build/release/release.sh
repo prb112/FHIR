@@ -44,7 +44,7 @@ function deploy_bintray {
 function deploy_via_curl { 
     TYPE="${1}"
     # Upload to BinTray
-    for PROJ in `find . -type d -maxdepth 1 | grep -v '.git' | grep -v 'build' | grep -v '/docs' | sed 's|.\/||g' | grep -v '\.'`
+    for PROJ in `find . -type d -maxdepth 1 | grep -v '.git' | grep -v 'build' | grep -v '/docs' | sed 's|.\/||g' | grep -v '\.' | grep -v 'examples-gen'`
     do 
         echo "PROJECT: ${PROJ}"
 

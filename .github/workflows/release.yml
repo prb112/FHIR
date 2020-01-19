@@ -33,6 +33,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOCS_SITE_TOKEN }}
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
         GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        BINTRAY_PASSWORD: ${{ secrets.BINTRAY_PASSWORD }}
         CI: true
         JAVA_HOME: /opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/
       run: |
@@ -44,8 +45,9 @@ jobs:
         bash build/release/code-coverage.sh
         # only covers unit tests (not server integration tests)
         # bash build/release/ibm-java-regression.sh
-        bash build/release/diagnostics.sh
         bash build/release/release.sh
+        bash build/release/synch-maven-central.sh
+        bash build/release/diagnostics.sh
     - name: Gather error logs
       if: failure()
       run: |

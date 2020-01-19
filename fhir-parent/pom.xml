@@ -30,6 +30,7 @@
         <java.version>1.8</java.version>
         <fhir-examples.properties>4.0.1-SNAPSHOT</fhir-examples.properties>
         <fhir-tools.properties>4.0.1-SNAPSHOT</fhir-tools.properties>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     </properties>
 
     <modules>

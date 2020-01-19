@@ -54,7 +54,7 @@ function deploy_via_curl {
         then 
             echo " - Uploading jar: ${SOURCES_JAR}"
             FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-sources.jar"
-            curl -T "${PROJ}/target/${SOURCES_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            curl -T "${PROJ}/target/${SOURCES_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BUILD_VERSION}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
             echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
         fi
         
@@ -64,7 +64,7 @@ function deploy_via_curl {
         then 
             echo " - Uploading jar: ${JAVADOC_JAR}"
             FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-javadoc.jar"
-            curl -T "${PROJ}/target/${JAVADOC_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            curl -T "${PROJ}/target/${JAVADOC_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BUILD_VERSION}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
             echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
         fi
 
@@ -74,7 +74,7 @@ function deploy_via_curl {
         then 
             echo " - Uploading jar: ${TESTS_JAR}"
             FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-tests.jar"
-            curl -T "${PROJ}/target/${TESTS_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            curl -T "${PROJ}/target/${TESTS_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BUILD_VERSION}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
             echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
         fi
 
@@ -82,15 +82,15 @@ function deploy_via_curl {
         do 
             echo " - Uploading jar: ${JAR_FILE}"
             FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${JAR_FILE}"
-            curl -T "${PROJ}/target/${JAR_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            curl -T "${PROJ}/target/${JAR_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BUILD_VERSION}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
             echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
         done
 
         for ZIP_FILE in `find ${PROJ}/target -name '*.zip' -and -not -name '*-index.zip' -maxdepth 1 -exec basename {} \;`
         do 
             echo " - Uploading jar: ${ZIP_FILE}"
-            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BINTRAY_VERSION_NAME}/${ZIP_FILE}"
-            curl -T "${PROJ}/target/${ZIP_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${ZIP_FILE}"
+            curl -T "${PROJ}/target/${ZIP_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BUILD_VERSION}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
             echo ""
         done
     done

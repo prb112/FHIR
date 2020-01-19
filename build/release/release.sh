@@ -40,6 +40,62 @@ function deploy_bintray {
     check_and_fail $? "${FUNCNAME[0]} - stopped - ${PROJECT_PATH}"
 }
 
+# deploy_via_curl - uploads each artifact via curl
+function deploy_via_curl { 
+    TYPE="${1}"
+    # Upload to BinTray
+    for PROJ in `find . -type d -maxdepth 1 | grep -v '.git' | grep -v 'build' | grep -v '/docs' | sed 's|.\/||g' | grep -v '\.'`
+    do 
+        echo "PROJECT: ${PROJ}"
+
+        # Upload SOURCES Jar
+        SOURCES_JAR=`find ${PROJ}/target -iname "*${BUILD_VERSION}-sources.jar" -maxdepth 1 -exec basename {} \;`
+        if [ ! -z "${SOURCES_JAR}" ]
+        then 
+            echo " - Uploading jar: ${SOURCES_JAR}"
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-sources.jar"
+            curl -T "${PROJ}/target/${SOURCES_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
+        fi
+        
+        # Upload JAVADOC Jar
+        JAVADOC_JAR=`find ${PROJ}/target -iname "*${BUILD_VERSION}-javadoc.jar" -maxdepth 1 -exec basename {} \;`
+        if [ ! -z "${JAVADOC_JAR}" ]
+        then 
+            echo " - Uploading jar: ${JAVADOC_JAR}"
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-javadoc.jar"
+            curl -T "${PROJ}/target/${JAVADOC_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
+        fi
+
+        # Upload tests Jar
+        TESTS_JAR=`find ${PROJ}/target -iname "*${BUILD_VERSION}-tests.jar" -maxdepth 1 -exec basename {} \;`
+        if [ ! -z "${TESTS_JAR}" ]
+        then 
+            echo " - Uploading jar: ${TESTS_JAR}"
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${PROJ}-${BUILD_VERSION}-tests.jar"
+            curl -T "${PROJ}/target/${TESTS_JAR}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
+        fi
+
+        for JAR_FILE in `find ${PROJ}/target -maxdepth 1 -not -name '*-tests.jar' -and -not -name '*-javadoc.jar' -and -not -name '*-sources.jar' -and -not -name '*orginal*.jar' -and -name '*.jar' -exec basename {} \;`
+        do 
+            echo " - Uploading jar: ${JAR_FILE}"
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BUILD_VERSION}/${JAR_FILE}"
+            curl -T "${PROJ}/target/${JAR_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            echo " - Done uploading jar file to ${FILE_TARGET_PATH}"
+        done
+
+        for ZIP_FILE in `find ${PROJ}/target -name '*.zip' -and -not -name '*-index.zip' -maxdepth 1 -exec basename {} \;`
+        do 
+            echo " - Uploading jar: ${ZIP_FILE}"
+            FILE_TARGET_PATH="/com/ibm/fhir/${PROJ}/${BINTRAY_VERSION_NAME}/${ZIP_FILE}"
+            curl -T "${PROJ}/target/${ZIP_FILE}" -u${BINTRAY_USERNAME}:${BINTRAY_PASSWORD} -H "X-Bintray-Package:${PROJ}" -H "X-Bintray-Version:${BINTRAY_VERSION_NAME}" https://api.bintray.com/content/ibm-watson-health/ibm-fhir-server-${TYPE}${FILE_TARGET_PATH}
+            echo ""
+        done
+    done
+}
+
 ###############################################################################
 # check to see if mvn exists
 if which mvn | grep -i mvn
@@ -53,16 +109,12 @@ fi
 case $BUILD_TYPE in
     RELEASE_CANDIDATE) 
         TYPE="snapshots"
-        deploy_bintray "fhir-examples" "${TYPE}"
-        deploy_bintray "fhir-tools" "${TYPE}"
-        deploy_bintray "fhir-parent" "${TYPE}"
+        deploy_via_curl "${TYPE}"
         header_line
     ;;
     RELEASE) 
         TYPE="releases"
-        deploy_bintray "fhir-examples" "${TYPE}"
-        deploy_bintray "fhir-tools" "${TYPE}"
-        deploy_bintray "fhir-parent" "${TYPE}"
+        deploy_via_curl "${TYPE}"
         header_line
     ;;
     SNAPSHOT) 

@@ -32,6 +32,6 @@ popd > /dev/null
 diagnostic_details > diagnostic_details.log
 
 # To include the distribution, include ' -or -iname fhir-server-distribution.zip'
-tar -czf release-logs.tgz $(find . -iname diagnostic_details.log -or -iname surefire-reports -or -iname jacoco.exec -or -iname jacoco-aggregate)
+tar -czf release-test-coverage-and-logs.tgz $(find . -iname diagnostic_details.log -or -iname surefire-reports -or -iname jacoco.exec -or -iname jacoco-aggregate)
 
 # EOF

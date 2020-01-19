@@ -141,6 +141,22 @@ echo BUILD_DISPLAY_NAME="${BUILD_ID}" >> bootstrap.env
 # Outputting JAVA_HOME
 debugging "JAVA_HOME is [${JAVA_HOME}]"
 
+# Check the BINTRAY_PASSWORD is set
+if [ ! -z "${BINTRAY_PASSWORD}" ]
+then 
+    info "BINTRAY PASSWORD is set!"
+else 
+    warn "BINTRAY PASSWORD is NOT set!"
+fi
+
+# Check the BINTRAY_PASSWORD is set
+if [ ! -z "${BINTRAY_USERNAME}" ]
+then 
+    info "BINTRAY USERNAME is set!"
+else 
+    warn "BINTRAY USERNAME is NOT set!"
+fi
+
 # Reset to Original Directory
 popd > /dev/null
 

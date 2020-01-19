@@ -33,6 +33,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.DOCS_SITE_TOKEN }}
         GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
         GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+        BINTRAY_USERNAME: ${{ secrets.BINTRAY_USERNAME }}
         BINTRAY_PASSWORD: ${{ secrets.BINTRAY_PASSWORD }}
         CI: true
         JAVA_HOME: /opt/hostedtoolcache/AdoptOpenJDK/1.0.0-releases-${{ matrix.java }}-hotspot-normal-latest/x64/

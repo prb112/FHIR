@@ -40,7 +40,6 @@ jobs:
       run: |
         bash build/release/bootstrap-env.sh
         . ./build/release/bootstrap.env
-        cat ./build/release/bootstrap.env
         bash build/release/version.sh
         bash build/release/clean.sh
         bash build/release/build.sh

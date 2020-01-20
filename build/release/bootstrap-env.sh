@@ -130,15 +130,29 @@ set_build_variable GIT_URL "development" "${GITHUB_REPOSITORY}"
 # Create Build ID - Check if integration build
 # sets BUILD_TYPE and BUILD_ID (naturally one of these cannot be empty to hold true.)
 # - Check type for Travis build
-set_build_type "-${TRAVIS_TAG}-" "${GITHUB_REF}" "${GITHUB_SHA}"
+if [ ! -z "${TRAVIS_TAG}" ]
+then
+    set_build_type "-${TRAVIS_TAG}-" "${GITHUB_REF}" "${GITHUB_SHA}"
+fi 
+
 
 # - Check type for GitHub Actions build
 set_build_type "-${TRAVIS_TAG}-" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_BRANCH}"
+if [[ "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')" == *"RC"* ]]
+then
+    outputEnvironment "export BUILD_TYPE=\"RELEASE_CANDIDATE\""
+    info "Build_Type is RELEASE_CANDIDATE"
+    set_build_variable BUILD_ID "" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+elif [ ! -z "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')" ]
+    outputEnvironment "export BUILD_TYPE=\"RELEASE\"" 
+    info "Build_Type is RELEASE"
+    set_build_variable BUILD_ID "" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
+fi
 
 # - Check type for LOCAL build
 set_build_type "-${FHIR_GIT_TAG}-" "${FHIR_GIT_BUILD_NUMBER}" "${FHIR_GIT_BRANCH}"
 
-echo BUILD_DISPLAY_NAME="${BUILD_ID}" >> bootstrap.env
+echo "export BUILD_DISPLAY_NAME=\"${BUILD_ID}\"" >> bootstrap.env
 
 # Outputting JAVA_HOME
 debugging "JAVA_HOME is [${JAVA_HOME}]"

@@ -144,6 +144,7 @@ then
     info "Build_Type is RELEASE_CANDIDATE"
     set_build_variable BUILD_ID "" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"
 elif [ ! -z "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')" ]
+then
     outputEnvironment "export BUILD_TYPE=\"RELEASE\"" 
     info "Build_Type is RELEASE"
     set_build_variable BUILD_ID "" "$(echo ${GITHUB_REF} | sed 's|refs/tags/||g')"

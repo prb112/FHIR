@@ -23,11 +23,11 @@ jobs:
       with:
         ref: refs/heads/master
         fetch-depth: 1
-    - name: Set up OpenJDK
+    - name: Setup OpenJDK
       uses: joschi/setup-jdk@v1
       with:
         java-version: ${{ matrix.java }}
-    - name: Build and Release Tags
+    - name: Build and Release for Git Tag
       env:
         BASE: origin/${{ github['base_ref'] }}
         GITHUB_TOKEN: ${{ secrets.DOCS_SITE_TOKEN }}

@@ -58,7 +58,26 @@ public class ImportTransientUserData extends ImportCheckPointData {
      * @return
      */
     public static ImportTransientUserData fromImportCheckPointData(ImportCheckPointData importCheckPointData) {
-        return (ImportTransientUserData) ImportTransientUserData.Builder.builder().importPartitionWorkitem(importCheckPointData.importPartitionWorkitem).numOfProcessedResources(importCheckPointData.numOfProcessedResources).importPartitionResourceType(importCheckPointData.importPartitionResourceType).numOfImportedResources(importCheckPointData.numOfImportedResources).numOfImportFailures(importCheckPointData.numOfImportFailures).uniqueIDForImportFailureOperationOutcomes(importCheckPointData.uniqueIDForImportFailureOperationOutcomes).uniqueIDForImportOperationOutcomes(importCheckPointData.uniqueIDForImportOperationOutcomes).uploadIdForOperationOutcomes(importCheckPointData.uploadIdForOperationOutcomes).dataPacksForOperationOutcomes(importCheckPointData.dataPacksForOperationOutcomes).partNumForOperationOutcomes(importCheckPointData.partNumForOperationOutcomes).uploadIdForFailureOperationOutcomes(importCheckPointData.uploadIdForFailureOperationOutcomes).dataPacksForFailureOperationOutcomes(importCheckPointData.dataPacksForFailureOperationOutcomes).partNumForFailureOperationOutcomes(importCheckPointData.partNumForFailureOperationOutcomes).totalReadMilliSeconds(importCheckPointData.totalReadMilliSeconds).totalValidationMilliSeconds(importCheckPointData.totalValidationMilliSeconds).totalWriteMilliSeconds(importCheckPointData.totalWriteMilliSeconds).importFileSize(importCheckPointData.importFileSize).inFlyRateBeginMilliSeconds(importCheckPointData.inFlyRateBeginMilliSeconds).build();
+        return (ImportTransientUserData) ImportTransientUserData.Builder.builder()
+                .importPartitionWorkitem(importCheckPointData.importPartitionWorkitem)
+                .numOfProcessedResources(importCheckPointData.numOfProcessedResources)
+                .importPartitionResourceType(importCheckPointData.importPartitionResourceType)
+                .numOfImportedResources(importCheckPointData.numOfImportedResources)
+                .numOfImportFailures(importCheckPointData.numOfImportFailures)
+                .uniqueIDForImportFailureOperationOutcomes(importCheckPointData.uniqueIDForImportFailureOperationOutcomes)
+                .uniqueIDForImportOperationOutcomes(importCheckPointData.uniqueIDForImportOperationOutcomes)
+                .uploadIdForOperationOutcomes(importCheckPointData.uploadIdForOperationOutcomes)
+                .dataPacksForOperationOutcomes(importCheckPointData.dataPacksForOperationOutcomes)
+                .partNumForOperationOutcomes(importCheckPointData.partNumForOperationOutcomes)
+                .uploadIdForFailureOperationOutcomes(importCheckPointData.uploadIdForFailureOperationOutcomes)
+                .dataPacksForFailureOperationOutcomes(importCheckPointData.dataPacksForFailureOperationOutcomes)
+                .partNumForFailureOperationOutcomes(importCheckPointData.partNumForFailureOperationOutcomes)
+                .totalReadMilliSeconds(importCheckPointData.totalReadMilliSeconds)
+                .totalValidationMilliSeconds(importCheckPointData.totalValidationMilliSeconds)
+                .totalWriteMilliSeconds(importCheckPointData.totalWriteMilliSeconds)
+                .importFileSize(importCheckPointData.importFileSize)
+                .inFlyRateBeginMilliSeconds(importCheckPointData.inFlyRateBeginMilliSeconds)
+                .build();
     }
 
     public static class Builder extends ImportCheckPointData.Builder {
@@ -68,7 +87,7 @@ public class ImportTransientUserData extends ImportCheckPointData {
         }
 
         @Override
-        public ImportCheckPointData build() {
+        public ImportTransientUserData build() {
             ImportTransientUserData importTransientUserData = new ImportTransientUserData();
             importTransientUserData.importPartitionWorkitem = this.importPartitionWorkitem;
             importTransientUserData.numOfProcessedResources = this.numOfProcessedResources;

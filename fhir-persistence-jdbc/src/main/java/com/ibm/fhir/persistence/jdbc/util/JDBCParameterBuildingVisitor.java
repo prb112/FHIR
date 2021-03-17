@@ -1,5 +1,5 @@
 /*
- * (C) Copyright IBM Corp. 2017,2020
+ * (C) Copyright IBM Corp. 2017, 2021
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -612,6 +612,16 @@ public class JDBCParameterBuildingVisitor extends DefaultVisitor {
                 ReferenceParmVal p = new ReferenceParmVal();
                 p.setRefValue(refValue);
                 p.setName(searchParamCode);
+                result.add(p);
+            }
+            Identifier identifier = reference.getIdentifier();
+            if (identifier != null && identifier.getValue() != null) {
+                TokenParmVal p = new TokenParmVal();
+                p.setName(searchParamCode);
+                if (identifier.getSystem() != null) {
+                    p.setValueSystem(identifier.getSystem().getValue());
+                }
+                p.setValueCode(identifier.getValue().getValue());
                 result.add(p);
             }
         } catch (FHIRSearchException x) {

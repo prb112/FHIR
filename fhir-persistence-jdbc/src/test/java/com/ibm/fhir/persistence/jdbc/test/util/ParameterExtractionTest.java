@@ -1,5 +1,5 @@
 /*
- * (C) Copyright IBM Corp. 2019, 2020
+ * (C) Copyright IBM Corp. 2019, 2021
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -649,12 +649,18 @@ public class ParameterExtractionTest {
         JDBCParameterBuildingVisitor parameterBuilder = new JDBCParameterBuildingVisitor(referenceSearchParam);
         Reference.builder()
                  .reference(string(SAMPLE_REF))
+                 .identifier(Identifier.builder()
+                     .system(Uri.of(SAMPLE_URI))
+                     .value(string(SAMPLE_STRING))
+                     .build())
                  .build()
                  .accept(parameterBuilder);
         List<ExtractedParameterValue> params = parameterBuilder.getResult();
-        assertEquals(params.size(), 1, "Number of extracted parameters");
+        assertEquals(params.size(), 2, "Number of extracted parameters");
         assertEquals(((ReferenceParmVal) params.get(0)).getRefValue().getValue(), SAMPLE_REF_ID);
         assertEquals(((ReferenceParmVal) params.get(0)).getRefValue().getTargetResourceType(), SAMPLE_REF_RESOURCE_TYPE);
+        assertEquals(((TokenParmVal) params.get(1)).getValueSystem(), SAMPLE_URI);
+        assertEquals(((TokenParmVal) params.get(1)).getValueCode(), SAMPLE_STRING);
     }
 
     @Test

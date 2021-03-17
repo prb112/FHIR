@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -29,10 +31,14 @@ import com.ibm.fhir.persistence.helper.FHIRTransactionHelper;
  */
 public class GroupHandler {
 
+    private static final Logger logger = Logger.getLogger(GroupHandler.class.getName());
+
     private BulkAuditLogger auditLogger = new BulkAuditLogger();
 
     protected FHIRPersistence fhirPersistence;
 
+
+    private Set<String> uniquenessGuard = null;
     // List for the patients
     private List<Member> patientMembers = null;
     private String provider = null;
@@ -96,13 +102,18 @@ public class GroupHandler {
         for (Member member : group.getMember()) {
             String refValue = member.getEntity().getReference().getValue();
             if (refValue.startsWith("Patient")) {
-                patients.add(member);
+                if (uniquenessGuard.add(refValue)) {
+                    patientMembers.add(member);
+                }
             } else if (refValue.startsWith("Group")) {
                 Group group2 = findGroupByID(refValue.substring(6));
                 // Only expand if NOT previously found
                 if (!groupsInPath.contains(group2.getId())) {
                     expandGroupToPatients(group2, patients, groupsInPath);
                 }
+            } else if (logger.isLoggable(Level.FINE)){
+                logger.fine("Skipping group member '" + refValue + "'. "
+                        + "Only literal relative references to patients will be used for export.");
             }
         }
     }

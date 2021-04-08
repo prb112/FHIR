@@ -1953,6 +1953,9 @@ This section contains reference information about each of the configuration prop
 |`fhirServer/core/capabilityStatementCacheTimeout`|integer|The number of minutes that a tenant's CapabilityStatement is cached for the metadata endpoint. |
 |`fhirServer/core/extendedCodeableConceptValidation`|boolean|A boolean flag which indicates whether extended validation is performed by the server during object construction for code, Coding, CodeableConcept, Quantity, Uri, and String elements which have required bindings to value sets.|
 |`fhirServer/core/disabledOperations`|string|A comma-separated list of operations which are not allowed to run on the IBM FHIR Server, for example, `validate,import`. Note, do not include the dollar sign `$`|
+|`fhirServer/term/graphTermServiceProvider/enabled`|boolean|Indicates whether the graph term service provider should be used by the FHIR term service to access code system content|
+|`fhirServer/term/graphTermServiceProvider/timeLimit`|integer|Graph traversal time limit (in milliseconds)|
+|`fhirServer/term/graphTermServiceProvider/configuration`|object (name/value pairs)|A JSON object that contains the name/value pairs used to configure the graph database behind the graph term service provider see: [https://docs.janusgraph.org/basics/configuration-reference/](https://docs.janusgraph.org/basics/configuration-reference/)|
 |`fhirServer/resources/open`|boolean|Whether resources that are not explicitly listed in the configuration should be supported by the FHIR Server REST layer. When open is set to `false`, only the resources listed in fhir-server-config.json are supported.|
 |`fhirServer/resources/Resource/interactions`|string list|A list of strings that represent the RESTful interactions (create, read, vread, update, patch, delete, history, and/or search) supported for resource types. Omitting this property is equivalent to supporting all FHIR interactions for the supported resources. An empty list, `[]`, can be used to indicate that no REST methods are supported. This property can be overridden for specific resource types via the `fhirServer/resources/<resourceType>/interactions` property.|
 |`fhirServer/resources/Resource/searchParameters`|object|The set of search parameters to support for all supported resource types. Omitting this property is equivalent to supporting all search parameters in the server's registry that apply to resource type "Resource" (all resources). An empty object, `{}`, can be used to indicate that no global search parameters are supported.|
@@ -2029,12 +2032,16 @@ This section contains reference information about each of the configuration prop
 |`fhirServer/bulkdata/core/cos/requestTimeout`|number|The request timeout in second for the COS client|
 |`fhirServer/bulkdata/core/cos/socketTimeout`|number|The socket timeout in second for the COS client|
 |`fhirServer/bulkdata/core/cos/useServerTruststore`|boolean|If the COS Client should use the IBM FHIR Server's TrustStore to access S3/IBMCOS service |
+|`fhirServer/bulkdata/core/cos/presignedExpiry`|number|The time in seconds of the presigned download URL; must be using HMAC auth|
+|`fhirServer/bulkdata/core/file/writeTriggerSizeMB`|number|The size, in megabytes, at which to write the buffer to file.|
+|`fhirServer/bulkdata/core/file/sizeThresholdMB`|number|The size, in megabytes, at which to finish writing a given file. Use `0` to indicate that all resources of a given type should be written to a single file.|
+|`fhirServer/bulkdata/core/file/resourceCountThreshold`|number|The number of resources at which to finish writing a given file. The actual number of resources written to a single file may be slightly above this number, dependent on the configured page size. Use `0` to indicate that there is no limit to the number of resources to be written to a single file.|
 |`fhirServer/bulkdata/core/batchIdEncryptionKey`|string|Encoding key for JavaBatch job id |
 |`fhirServer/bulkdata/core/pageSize`|number|The search page size for patient/group export and the legacy export, the default value is 1000 |
 |`fhirServer/bulkdata/core/maxPartitions`|number| The maximum number of simultaneous partitions that are processed per Export and Import |
 |`fhirServer/bulkdata/core/maxInputs`|number| The number of inputs allowed for $import |
 |`fhirServer/bulkdata/core/iamEndpoint`|string| Override the system's IAM endpoint |
-|`fhirServer/bulkdata/core/fastTxTimeout`|number| Time timeout for the fast implementations transaction |
+|`fhirServer/bulkdata/core/maxChunkReadTime`|string| Max time in milliseconds to read during a bulkdata export without type filters. The time should be three quarters of the transactionManager timeout (often the FHIR_TRANSACTION_MANAGER_TIMEOUT value). Note, this value is a string representation of a long value.|
 |`fhirServer/bulkdata/storageProviders/<source>/type`|string|The type of storageProvider aws-s3, ibm-cos, file, https |
 |`fhirServer/bulkdata/storageProviders/<source>/bucketName`|string| Object store bucket name |
 |`fhirServer/bulkdata/storageProviders/<source>/location`|string|Object store location |
@@ -2073,6 +2080,8 @@ This section contains reference information about each of the configuration prop
 |`fhirServer/core/conditionalDeleteMaxNumber`|10|
 |`fhirServer/core/capabilityStatementCacheTimeout`|60|
 |`fhirServer/core/extendedCodeableConceptValidation`|true|
+|`fhirServer/term/graphTermServiceProvider/enabled`|false|
+|`fhirServer/term/graphTermServiceProvider/timeLimit`|90000|
 |`fhirServer/resources/open`|true|
 |`fhirServer/resources/Resource/interactions`|null (all interactions supported)|
 |`fhirServer/resources/Resource/searchParameters`|null (all global search parameters supported)|
@@ -2144,11 +2153,12 @@ This section contains reference information about each of the configuration prop
 |`fhirServer/bulkdata/core/cos/requestTimeout`|120|
 |`fhirServer/bulkdata/core/cos/socketTimeout`|120|
 |`fhirServer/bulkdata/core/cos/useServerTruststore`|false|
+|`fhirServer/bulkdata/core/cos/presignedExpiry`|86400|
 |`fhirServer/bulkdata/core/pageSize`|1000|
 |`fhirServer/bulkdata/core/maxPartitions`|5|
 |`fhirServer/bulkdata/core/maxInputs`|5|
 |`fhirServer/bulkdata/core/iamEndpoint`|https://iam.cloud.ibm.com/oidc/token|
-|`fhirServer/bulkdata/core/fastTxTimeout`|90000|
+|`fhirServer/bulkdata/core/maxChunkReadTime`|90000|
 |`fhirServer/bulkdata/storageProviders/<source>/disableBaseUrlValidation`|false|
 |`fhirServer/bulkdata/storageProviders/<source>/exportPublic`|false|
 |`fhirServer/bulkdata/storageProviders/<source>/enableParquet`|false|
@@ -2182,6 +2192,9 @@ must restart the server for that change to take effect.
 |`fhirServer/core/capabilityStatementCacheTimeout`|Y|Y|
 |`fhirServer/core/extendedCodeableConceptValidation`|N|N|
 |`fhirServer/core/disabledOperations`|N|N|
+|`fhirServer/term/graphTermServiceProvider/enabled`|N|N|
+|`fhirServer/term/graphTermServiceProvider/timeLimit`|N|N|
+|`fhirServer/term/graphTermServiceProvider/configuration`|N|N|
 |`fhirServer/resources/open`|Y|Y|
 |`fhirServer/resources/Resource/interactions`|Y|Y|
 |`fhirServer/resources/Resource/searchParameters`|Y|Y|
@@ -2253,7 +2266,8 @@ must restart the server for that change to take effect.
 |`fhirServer/bulkdata/core/cos/requestTimeout`|N|N|
 |`fhirServer/bulkdata/core/cos/socketTimeout`|N|N|
 |`fhirServer/bulkdata/core/cos/useServerTruststore`|Y|Y|
-|`fhirServer/bulkdata/core/batchIdEncryptionKey`|N|N|
+|`fhirServer/bulkdata/core/cos/presignedExpiry`|Y|Y|
+|`fhirServer/bulkdata/core/batchIdEncryptionKey`|Y|N|
 |`fhirServer/bulkdata/core/pageSize`|Y|Y|
 |`fhirServer/bulkdata/core/maxPartitions`|Y|Y|
 |`fhirServer/bulkdata/core/maxInputs`|Y|Y|

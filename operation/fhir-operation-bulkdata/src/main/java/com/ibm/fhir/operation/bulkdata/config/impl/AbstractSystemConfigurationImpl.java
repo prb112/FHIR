@@ -47,6 +47,16 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
     // 200,000 at 1 KB/file would lead to roughly 200 MB files; similar to the DEFAULT_COS_OBJ_MAX_SIZE_MB.
     protected static final int DEFAULT_COS_OBJ_MAX_RESOURCE_COUNT = 200000;
 
+    // The default size (1MiB) at which to write to file (NDJSON-only).
+    private static final int DEFAULT_FILE_WRITE_TRIGGER_SIZE_MB = 1;
+
+    // The default size (200MiB) at which to finish writing a given file (NDJSON-only).
+    protected static final int DEFAULT_FILE_MAX_SIZE_MB = 200;
+
+    // The number of resources at which to finish writing a given file (NDJSON and Parquet).
+    // 200,000 at 1 KB/file would lead to roughly 200 MB files; similar to the DEFAULT_COS_OBJ_MAX_SIZE_MB.
+    protected static final int DEFAULT_FILE_MAX_RESOURCE_COUNT = 200000;
+
     private static final String FHIR_BULKDATA_ALLOWED_TYPES = "FHIR_BULKDATA_ALLOWED_TYPES";
     private static final Set<String> ALLOWED_STORAGE_TYPES = determineAllowedStorageType();
 
@@ -62,7 +72,9 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
     private static final boolean coreCosUseServerTruststore = defaultCoreCosUseServerTruststore();
     private static final int coreCosRequestTimeout = defaultCoreCosRequestTimeout();
     private static final int coreCosSocketTimeout = defaultCoreCosSocketTimeout();
-    private static final String coreBatchIdEncryptionKey = defaultCoreBatchIdEncryptionKey();
+    private static final int coreFileResourceCountThreshold = defaultCoreFileResourceCountThreshold();
+    private static final int coreFileWriteTriggerSize = defaultCoreFileWriteTriggerSize();
+    private static final long coreFileSizeThreshold = defaultCoreFileSizeThreshold();
     private static final int coreMaxParititions = defaultCoreMaxParititions();
     private static final int inputLimits = defaultInputLimits();
 
@@ -82,10 +94,6 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
 
     @Override
     public String getCoreBatchIdEncryptionKey() {
-        return coreBatchIdEncryptionKey;
-    }
-
-    private static final String defaultCoreBatchIdEncryptionKey() {
         return FHIRConfigHelper.getStringProperty("fhirServer/bulkdata/core/batchIdEncryptionKey", null);
     }
 
@@ -152,6 +160,35 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
     private static final int defaultCoreCosObjectResourceCountThreshold() {
         final String PATH = "fhirServer/bulkdata/core/cos/objectResourceCountThreshold";
         return FHIRConfigHelper.getIntProperty(PATH, DEFAULT_COS_OBJ_MAX_RESOURCE_COUNT);
+    }
+
+    @Override
+    public int getCoreFileWriteTriggerSize() {
+        return coreFileWriteTriggerSize;
+    }
+
+    private static final int defaultCoreFileWriteTriggerSize() {
+        return 1024 * 1024 * FHIRConfigHelper.getIntProperty("fhirServer/bulkdata/core/file/writeTriggerSizeMB", DEFAULT_FILE_WRITE_TRIGGER_SIZE_MB);
+    }
+
+    @Override
+    public long getCoreFileSizeThreshold() {
+        return coreFileSizeThreshold;
+    }
+
+    private static final long defaultCoreFileSizeThreshold() {
+        final String PATH = "fhirServer/bulkdata/core/file/sizeThresholdMB";
+        return 1024l * 1024l * FHIRConfigHelper.getIntProperty(PATH, DEFAULT_FILE_MAX_SIZE_MB);
+    }
+
+    @Override
+    public int getCoreFileResourceCountThreshold() {
+        return coreFileResourceCountThreshold;
+    }
+
+    private static final int defaultCoreFileResourceCountThreshold() {
+        final String PATH = "fhirServer/bulkdata/core/file/resourceCountThreshold";
+        return FHIRConfigHelper.getIntProperty(PATH, DEFAULT_FILE_MAX_RESOURCE_COUNT);
     }
 
     @Override
@@ -228,8 +265,8 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
     }
 
     @Override
-    public int getCoreFastTxTimeout() {
-        return FHIRConfigHelper.getIntProperty("fhirServer/bulkdata/core/fastTxTimeout", MAX_PARTITIONPROCESSING_THREADNUMBER);
+    public long getCoreFastMaxReadTimeout() {
+        return Long.parseLong(FHIRConfigHelper.getStringProperty("fhirServer/bulkdata/core/maxChunkReadTime", "90000"));
     }
 
     @Override
@@ -279,5 +316,11 @@ public abstract class AbstractSystemConfigurationImpl implements ConfigurationAd
     @Override
     public int getImportInflyRateNumberOfFhirResources(String provider) {
         return IMPORT_INFLY_RATE_NUMOFFHIRRESOURCES;
+    }
+
+    @Override
+    public int getPresignedUrlExpiry() {
+        int expirySeconds = FHIRConfigHelper.getIntProperty("fhirServer/bulkdata/core/cos/presignedExpiry", 86400);
+        return Math.max(1, expirySeconds);
     }
 }

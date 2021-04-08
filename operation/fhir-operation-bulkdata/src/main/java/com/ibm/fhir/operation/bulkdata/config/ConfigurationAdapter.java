@@ -153,6 +153,35 @@ public interface ConfigurationAdapter {
     int getCoreCosSocketTimeout();
 
     /**
+     * The size (in bytes) to buffer before writing to file.
+     *
+     * @implNote System value.
+     *
+     * @return
+     */
+    int getCoreFileWriteTriggerSize();
+
+    /**
+     * The size (in bytes) at which to finish writing to a given file,
+     * or 0 to indicate that there is no file size threshold.
+     *
+     * @implNote System value.
+     *
+     * @return
+     */
+    long getCoreFileSizeThreshold();
+
+    /**
+     * The number of resources at which to finish writing to a given file,
+     * or 0 to indicate that there is no resource count threshold.
+     *
+     * @implNote System value.
+     *
+     * @return
+     */
+    int getCoreFileResourceCountThreshold();
+
+    /**
      * get the core page size used in Search.
      *
      * @return
@@ -187,13 +216,11 @@ public interface ConfigurationAdapter {
     String getCoreIamEndpoint();
 
     /**
-     * get the tx for the fast endpoint
-     *
-     * @implNote System value.
+     * get the number ms to read payloads from the persistence layer before stopping to checkpoint
      *
      * @return
      */
-    int getCoreFastTxTimeout();
+    long getCoreFastMaxReadTimeout();
 
     /**
      * gets the StorageProvider type which aligns with the StorageType
@@ -439,4 +466,10 @@ public interface ConfigurationAdapter {
      * @return
      */
     int getImportInflyRateNumberOfFhirResources(String provider);
+
+    /**
+     * the expiry time of the generated presigned urls.
+     * @return
+     */
+    int getPresignedUrlExpiry();
 }

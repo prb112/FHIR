@@ -37,13 +37,13 @@ generate_diff_log() {
 }
 
 # pick_version - picks the version based on the minor. 
-# From the Matrix, at least one is passed in: release: ['MINOR-1', 'MINOR-2']
+# From the Matrix, at least one is passed in: release: ['release', 'minor']
 pick_version() {
     INPUT="${1}"
-    if [ "MINOR-1" == "${INPUT}" ]
+    if [ "release" == "${INPUT}" ]
     then
         VERSION=$(git tag --sort=-v:refname | grep -v '-' | head -1)
-    elif [ "MINOR-2" == "${INPUT}" ]
+    elif [ "previous" == "${INPUT}" ]
     then
         MAJOR_VERSION=$(for TAG in  $(git tag --sort=-v:refname | grep -v '-')
         do

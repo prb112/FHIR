@@ -8,15 +8,15 @@
 
 set -ex
 
-# reindex_post - executes for each reindex post integration steps
-reindex_post(){
-    reindex="${1}"
-    if [ ! -z "${reindex}" ] && [ -f build/reindex/${reindex}/post-integration-test.sh ]
+# migration_post - executes for each migration post integration steps
+migration_post(){
+    migration="${1}"
+    if [ ! -z "${migration}" ] && [ -f build/migration/${migration}/post-integration-test.sh ]
     then 
-        echo "Running [${reindex}] post-integration-test"
-        bash build/reindex/${reindex}/post-integration-test.sh
+        echo "Running [${migration}] post-integration-test"
+        bash build/migration/${migration}/post-integration-test.sh
     else
-        cd build/reindex/${reindex}
+        cd build/migration/${migration}
         docker-compose down --remove-orphans --rmi local -v --timeout 30
     fi
 }
@@ -34,7 +34,7 @@ pushd $(pwd) > /dev/null
 
 cd "${WORKSPACE}"
 
-reindex_post ${1}
+migration_post ${1}
 
 # Reset to Original Directory
 popd > /dev/null

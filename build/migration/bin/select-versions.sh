@@ -9,6 +9,59 @@
 set -ex
 set -o pipefail
 
+# generate_diff_log - Generate log that highlights the changes
+generate_diff_log() {
+    DATASOURCE="${1}"
+    TAG="${2}"
+    PREVIOUS_TAG="${3}"
+
+    # Schema Changes
+    echo "# fhir-persistence-schema" > ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    git diff --name-only ${TAG}..${PREVIOUS_TAG} fhir-persistence-schema/src/main | sort -u >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    echo
+
+    # Structural Changes to Database Support
+    echo "# fhir-database-utils" >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    git diff --name-only ${TAG}..${PREVIOUS_TAG} fhir-database-utils/src/main | sort -u >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    echo
+
+    # Automation Changes
+    echo "# build/migration" >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    git diff --name-only ${TAG}..${PREVIOUS_TAG} build/migration | sort -u >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    echo
+
+    # JDBC Changes (e.g. how we extract or retrieve the data)
+    # important for reindexing (Extract Search Parameter Values)
+    echo "# fhir-persistence-jdbc" >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+    git diff --name-only ${TAG}..${PREVIOUS_TAG} fhir-persistence-jdbc/src/main | sort -u >> ${WORKSPACE}/build/migration/${DATASOURCE}/workarea/version-diff-${TAG}-${PREVIOUS_TAG}.log
+}
+
+# pick_version - picks the version based on the minor. 
+# From the Matrix, at least one is passed in: release: ['MINOR-1', 'MINOR-2']
+pick_version() {
+    INPUT="${1}"
+    if [ "MINOR-1" == "${INPUT}" ]
+    then
+        VERSION=$(git tag --sort=-v:refname | grep -v '-' | head -1)
+    elif [ "MINOR-2" == "${INPUT}" ]
+    then
+        MAJOR_VERSION=$(for TAG in  $(git tag --sort=-v:refname | grep -v '-')
+        do
+            MAJOR=$(echo $TAG | sed 's|\.| |g' | awk '{print $1}')
+            MINOR=$(echo $TAG | sed 's|\.| |g' | awk '{print $2}')
+            SEP='.'
+            if [ -z "${MINOR}" ]
+            then
+                SEP=''
+            fi
+            echo $MAJOR$SEP$MINOR
+        done | sort -ur | head -2 | tail -1)
+        VERSION=$(git tag --sort=-v:refname | grep -v '-' |  grep  -i ${MAJOR_VERSION} | head -n 1)
+    fi
+    echo ${VERSION}
+}
+
+
 echo "Changes to 'fhir-persistence-schema' between tags"
 PREVIOUS_TAG=HEAD
 for TAG in $(git tag --sort=-v:refname)
@@ -40,7 +93,7 @@ done
 
 
 
-
+['MINOR-1', 'MINOR-2']
 
 
 

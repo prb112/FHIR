@@ -29,6 +29,9 @@ services:
       db:
         condition: service_healthy
     hostname: fhir
+    environment:
+      - BOOTSTRAP_DB=false
+      - FHIR_TRANSACTION_MANAGER_TIMEOUT=240s
     volumes:
       - type: bind
         source: ./workarea/volumes/dist/config
@@ -42,8 +45,6 @@ services:
         source: ./workarea/volumes/dist/userlib/
         target: /opt/ol/wlp/usr/servers/defaultServer/userlib
         read_only: true
-      - ./resources/startup.sh:/opt/ol/wlp/usr/servers/defaultServer/startup.sh
-    command: sh -c "chmod +x /opt/ol/wlp/usr/servers/defaultServer/startup.sh && /opt/ol/wlp/usr/servers/defaultServer/startup.sh"
     healthcheck:
       start_period: 120s
       interval: 10s

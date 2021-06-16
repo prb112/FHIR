@@ -20,10 +20,19 @@ The GitHub Action is parameterized with a matrix for each new `$reindex` tests. 
 strategy:
   matrix:
     datastore: [ 'db2', 'postgres' ]
-    version: [ 'RELEASE-1', 'RELEASE-2' ]
+    release: ['PREVIOUS', 'PREVIOUS-1']
 ```
 
 Each datastore layer that is tested as part of the framework uses the default build files and the files that match the `matrix.datastore` name added to the `reindex.yml`.
+
+Each release is specified by MAJOR.MINOR.PATCH. The framework tests using the previous MINOR release, and the previous release to the previous MINOR release. 
+
+Consider the following examples to see how the selection occurs:
+
+1. **PREVIOUS**
+The build looks back to the PREVIOUS tag. The previous tag is determined based on a lexigraphical sort, so any patch-build does not reset the order.
+
+2. 
 
 |Filename|Purpose|
 |----------|----------------|

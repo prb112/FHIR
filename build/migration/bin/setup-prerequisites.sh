@@ -38,13 +38,13 @@ required_build(){
     cd ..
 }
 
-# reindex_build - executes for each reindex type.
-reindex_build(){
-    reindex="${1}"
-    if [ -f "build/reindex/${reindex}/setup-prerequisites.sh" ]
+# migration_build - executes for each reindex type.
+migration_build(){
+    migration="${1}"
+    if [ -f "build/migration/${migration}/setup-prerequisites.sh" ]
     then
-        echo "Running [${reindex}] setting setup prerequisites"
-        bash build/reindex/${reindex}/setup-prerequisites.sh
+        echo "Running [${migration}] setting setup prerequisites"
+        bash build/migration/${migration}/setup-prerequisites.sh
     fi
 }
 
@@ -62,7 +62,7 @@ fi
 cd "${WORKSPACE}"
 
 required_build
-reindex_build "${1}"
+migration_build "${1}"
 
 # Reset to Original Directory
 popd > /dev/null

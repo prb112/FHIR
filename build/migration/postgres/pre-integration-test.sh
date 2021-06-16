@@ -84,6 +84,8 @@ bringup(){
         sleep 1
     done
 
+    java -jar ${WORKSPACE}/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar --db-type postgresql --prop db.host=postgres_postgres_1 --prop db.port=5432 --prop db.database=fhirdb --prop user=fhiradmin --prop password=change-password --update-schema --grant-to fhirserver 
+
     # Startup FHIR
     docker-compose up --remove-orphans -d fhir
     cx=0

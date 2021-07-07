@@ -16,7 +16,7 @@ run_tests(){
     if [ ! -z "${migration}" ] && [ -f "build/migration/${migration}/2_previous-integration-test.sh" ]
     then 
         echo "Running [${migration}] previouos specific integration tests"
-        bash build/migration/${migration}/2_previous-integration-test.sh
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/2_previous-integration-test.sh
     else
         # Runs the migration tests
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
@@ -32,7 +32,7 @@ pushd $(pwd) > /dev/null
 # Change to the migration/bin directory
 cd "prev/"
 
-$BASE/build/common/wait_for_it.sh
+${WORKSPACE}/fhir/build/common/wait_for_it.sh
 run_tests "${1}"
 
 # Reset to Original Directory

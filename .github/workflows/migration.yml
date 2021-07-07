@@ -35,7 +35,7 @@ jobs:
       - name: Gather the environment details
         if: always()
         run: |
-          ls -al
+          ls -al fhir/
           bash fhir/build/common/gather-environment-details.sh
 
       - name: Determine parameters for environment variables

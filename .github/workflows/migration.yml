@@ -46,7 +46,7 @@ jobs:
       - name: Determine parameters for environment variables
         env:
           WORKSPACE: ${{ github.workspace }}
-        run: bash fhir/build/migration/bin/0_determine.sh ${{matrix.datastore}}
+        run: bash fhir/build/migration/bin/0_determine.sh ${{matrix.release}}
 
       - name: Restore the cache for the previous version
         if: "!contains(env.migration_skip, 'true')"
@@ -65,6 +65,7 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           bash fhir/build/migration/bin/1_check-cache.sh ${{matrix.datastore}}
+          exit 1
 
       - name: Checkout source code for previous
         if: "contains(env.migration_skip, 'true')"

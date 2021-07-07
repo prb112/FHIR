@@ -6,6 +6,8 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
+set -x
+
 # generate_between_tag_changelog - generates the details of the changes between tags
 generate_between_tag_changelog() {
     echo "Changes to 'fhir-persistence-schema' between tags"
@@ -114,11 +116,9 @@ pick_version() {
 ###############################################################################
 cd fhir/
 
-git tag --list
-
 generate_between_tag_changelog
 should_run
-pick_version
+pick_version "${1}"
 
 exit 1
 

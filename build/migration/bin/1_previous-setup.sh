@@ -51,7 +51,7 @@ migration_build(){
 ###############################################################################
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null
-cd fhir
+
 if [ -z "${WORKSPACE}" ]
 then 
     echo "The WORKSPACE value is unset"
@@ -59,7 +59,7 @@ then
 fi 
 
 # Change to the release directory
-cd "${WORKSPACE}"
+cd "${WORKSPACE}/prev"
 
 required_build
 migration_build "${1}"

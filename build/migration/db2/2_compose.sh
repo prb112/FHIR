@@ -76,7 +76,7 @@ bringup(){
         sleep 1
     done
 
-    echo "Persistence: "
+    echo ">>> Persistence >>>"
     echo 'change-password' > tenant.key
     java -jar ${WORKSPACE}/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
         --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \

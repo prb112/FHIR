@@ -94,7 +94,6 @@ jobs:
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
-          exit 1
           bash fhir/build/migration/bin/2_previous-integration-test.sh ${{matrix.datastore}}
           bash fhir/build/migration/bin/3_previous-teardown.sh ${{matrix.datastore}}
       
@@ -103,6 +102,7 @@ jobs:
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
+          exit 1
           bash fhir/build/migration/bin/3_previous-cache-startup.sh ${{matrix.datastore}}
 
       - name: Migrate to the current release 

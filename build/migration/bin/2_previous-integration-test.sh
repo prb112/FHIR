@@ -20,7 +20,7 @@ run_tests(){
     else
         # Runs the migration tests
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
-            -DskipTests=false | tee build/migration/${migration}/workarea/${migration}-previous.log
+            -DskipTests=false
     fi
 }
 

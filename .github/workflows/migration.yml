@@ -27,6 +27,8 @@ jobs:
           path: fhir/
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Fetch the right branch
         run: |
           cd fhir/
           git fetch --no-tags --prune --depth=1 origin +refs/heads/${BASE}:refs/remotes/origin/${BASE}

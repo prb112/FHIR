@@ -72,10 +72,10 @@ should_run() {
     if [ $i != 0 ]
     then
         echo "env.migration_skip=false"
-        echo "env.migration_skip=false" >> $GITHUB_ENV
+        echo "migration_skip=false" >> $GITHUB_ENV
     else
         echo "env.migration_skip=true"
-        echo "env.migration_skip=true" >> $GITHUB_ENV
+        echo "migration_skip=true" >> $GITHUB_ENV
     fi
     
     # JDBC Changes (e.g. how we extract or retrieve the data)
@@ -110,7 +110,7 @@ pick_version() {
         VERSION="${INPUT}"
     fi
     echo "env.migration_branch=${VERSION}"
-    echo "env.migration_branch=${VERSION}" >> $GITHUB_ENV
+    echo "migration_branch=${VERSION}" >> $GITHUB_ENV
 }
 
 ###############################################################################

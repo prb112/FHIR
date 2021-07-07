@@ -7,24 +7,25 @@ This document outlines the end-to-end migration automation framework that exerci
 The automation runs with these steps: 
 
 1. **Checkout source code for main** - Checks out the git code and populates the `github` environment variables.
-2. **Setup Java** - Downloads and setup for Java 11
-3. **Gather the environment details** - Gathers some rudimentary debugging details and dumps to the standard output
-4. **Determine parameters for environment variables** - Figures out the Build specific parameters:
+2. **Fetch the right branch** - Fetches the right branch from the repository
+3. **Setup Java** - Downloads and setup for Java 11
+4. **Gather the environment details** - Gathers some rudimentary debugging details and dumps to the standard output
+5. **Determine parameters for environment variables** - Figures out the Build specific parameters:
    - `env.migration_skip` - indicates if the migration should be skipped, e.g. no changes in the update-schema from prior release
    - `env.migration_cache` - indicates if the workflow should cache the database instead of recreating it
    - `env.migration_branch` - indicates the branch or release used to checkout previous
-5. **Restore the cache for the previous version** - if and only if the cache exists, we restore it.
-6. **Checks if the cache actually exists** - if the cache doesn't exist, we reset the environment variable
-7. **Checkout source code for previous** - if and only if the cache does not exist, we checkout the previous to `prev`
-8. **Setup previous release environment** - if and only if the cache does not exist, we setup the prior environment
-9. **Run previous release's Integration Tests** - if and only if the cache does not exist, we run the prior IT
-10. **Setup previous release's cached database** - if and only if the cache exists, we setup the database and start it
-11. **Migrate to the current release** - runs the update-schema
-12. **Integration Tests** - Run the reindex and current integration tests and check verison history are updated
-13. **Teardown and cleanup** - Shutsdown the Docker images and prunes the system completely
-14. **Cache the Database** - Cache the Database iff migration_cache is true
-15. **Gather error logs** - This step only runs upon a failure condition. 
-16. **Upload logs** - The step uploads the results of the integration tests and the operational logs are posted to the job. 
+6. **Restore the cache for the previous version** - if and only if the cache exists, we restore it.
+7. **Checks if the cache actually exists** - if the cache doesn't exist, we reset the environment variable
+8. **Checkout source code for previous** - if and only if the cache does not exist, we checkout the previous to `prev`
+9. **Setup previous release environment** - if and only if the cache does not exist, we setup the prior environment
+10. **Run previous release's Integration Tests** - if and only if the cache does not exist, we run the prior IT
+11. **Setup previous release's cached database** - if and only if the cache exists, we setup the database and start it
+12. **Migrate to the current release** - runs the update-schema
+13. **Integration Tests** - Run the reindex and current integration tests and check verison history are updated
+14. **Teardown and cleanup** - Shutsdown the Docker images and prunes the system completely
+15. **Cache the Database** - Cache the Database iff migration_cache is true
+16. **Gather error logs** - This step only runs upon a failure condition. 
+17. **Upload logs** - The step uploads the results of the integration tests and the operational logs are posted to the job. 
 
 Note, step 5 and step 14 cache the database using the [GitHub Cache Action](https://github.com/actions/cache).
 

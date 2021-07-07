@@ -82,6 +82,13 @@ jobs:
         run: |
           bash fhir/build/migration/bin/1_previous-setup.sh ${{matrix.datastore}}
 
+      - name: Setup docker-compose and database
+        if: "contains(env.migration_cache, 'false')"
+        env:
+          WORKSPACE: ${{ github.workspace }}
+        run: |
+          bash fhir/build/migration/bin/2_compose.sh ${{matrix.datastore}}
+
       - name: Run previous release's Integration Tests
         if: "contains(env.migration_cache, 'false')"
         env:

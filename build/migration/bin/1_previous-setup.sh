@@ -6,7 +6,8 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-set -ex
+set -e
+set +x
 
 # required_build - executes for every build
 required_build(){

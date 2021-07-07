@@ -36,7 +36,9 @@ jobs:
         if: always()
         run: |
           ls -al fhir/
-          bash ./fhir/build/common/gather-environment-details.sh
+          find fhir/build/common
+          find fhir/build/migration
+          bash fhir/build/common/gather-environment-details.sh
 
       - name: Determine parameters for environment variables
         env:

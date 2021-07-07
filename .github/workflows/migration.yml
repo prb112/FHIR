@@ -65,7 +65,6 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           bash fhir/build/migration/bin/1_check-cache.sh ${{matrix.datastore}}
-          exit 1
 
       - name: Checkout source code for previous
         if: "contains(env.migration_skip, 'true')"
@@ -81,6 +80,7 @@ jobs:
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
+          exit 1
           bash fhir/build/migration/bin/1_previous-setup.sh ${{matrix.datastore}}
 
       - name: Run previous release's Integration Tests

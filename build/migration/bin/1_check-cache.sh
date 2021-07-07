@@ -12,24 +12,30 @@ then
     find ~/fhir/build/migration/.cache
 fi
 
+if [ -f "$GITHUB_ENV" ]
+then
+    echo "Output of the Environment variables: "
+    cat "$GITHUB_ENV"
+fi
+
 if [ ! -f ~/fhir/build/migration/.cache/db.tgz ]
 then
-    echo "Skipping as the cache'd file does not exist"
-    echo "env.migration_skip=true" >> $GITHUB_ENV
+    echo "Skipping as the cached file does not exist"
+    echo "env.migration_skip=false" >> $GITHUB_ENV
     exit 0
 fi
 
-if [ ! -z ~/fhir/build/migration/.cache/db.tgz ]
+if [ -z ~/fhir/build/migration/.cache/db.tgz ]
 then
     echo "The cached file is empty"
-    echo "env.migration_skip=true" >> $GITHUB_ENV
+    echo "env.migration_skip=false" >> $GITHUB_ENV
     exit 0
 fi
 
-if [ "$(file somefile1.tar.gz | grep -q 'gzip compressed data' && echo yes || echo no)" == "no" ]
+if [ "$(file ~/fhir/build/migration/.cache/db.tgz | grep -q 'gzip compressed data' && echo yes || echo no)" == "no" ]
 then
     echo "Invalid tgz format"
-    echo "env.migration_skip=true" >> $GITHUB_ENV
+    echo "env.migration_skip=false" >> $GITHUB_ENV
     exit 0
 fi
 

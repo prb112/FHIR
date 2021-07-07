@@ -36,8 +36,7 @@ The GitHub Action is parameterized with a matrix for each migration based on the
 strategy:
   matrix:
     datastore: [ 'db2', 'postgres' ]
-      target: ['previous', 'last', '4.8.1']
-      type: ['step', 'direct']
+      target: ['previous', 'last']
 ```
 
 ### Parameter: **datastore**
@@ -48,7 +47,7 @@ Each datastore layer that is tested as part of the framework uses the default bu
 
 ### Parameter: **target** 
 
-The target indicates the starting point of a release number or `previous` or last `release`
+The target indicates the starting point of a release number or `previous` or last `release`. To keep this a low number of jobs, we should keep to the minimum numbers.
 
 Each release is specified by MAJOR.MINOR.PATCH. The framework tests using the previous MINOR release, and the previous release to the previous MINOR release. 
 
@@ -58,9 +57,7 @@ Consider the following examples to see how the selection occurs:
 - **previous** - The build looks back to the tag PREVIOUS to the `last` tag's MINOR release. The previous tag is determined based on a lexigraphical sort, so any patch-build does not reset the order.
 - **MAJOR.MINOR.PATCH** - The build looks at the specific tag. e.g. 4.8.1
 
-### Parameter: **type** 
-
-The type indicates how the schema is reached... `step` by step or `direct` to the current `main` schema cli
+Deisgn note, original implementation had a special parameter `Parameter: **type**`. The type indicates how the schema is reached... `step` by step or `direct` to the current `main` schema cli.
 
 ## Files
 

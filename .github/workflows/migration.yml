@@ -16,14 +16,13 @@ jobs:
     strategy:
       matrix:
         datastore: [ 'db2', 'postgres' ]
-        release: ['previous', 'last', '4.8.1']
-        type: ['step', 'direct']
+        release: ['previous', 'last']
       fail-fast: false
     steps:
       - name: Checkout source code for main
         uses: actions/checkout@v2.3.4
         with:
-          path: fhir
+          path: fhir/
           ref: refs/heads/main
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -36,6 +35,7 @@ jobs:
       - name: Gather the environment details
         if: always()
         run: |
+          ls -al
           bash fhir/build/common/gather-environment-details.sh
 
       - name: Determine parameters for environment variables
@@ -65,7 +65,7 @@ jobs:
         if: "contains(env.migration_skip, 'true')"
         uses: actions/checkout@v2.3.4
         with:
-          path: prev
+          path: prev/
           ref: refs/heads/${{ env.migration_branch }}
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -43,7 +43,7 @@ should_run() {
     TAG="$(git tag --sort=-v:refname | head -n 1)"
     PREVIOUS_TAG="HEAD"
 
-    let i = 0
+    i=0
 
     # Schema Changes
     COUNT=$(git diff --name-only ${TAG}..${PREVIOUS_TAG} fhir-persistence-schema/src/main | sort -u | wc -l)

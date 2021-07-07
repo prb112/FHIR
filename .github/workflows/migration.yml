@@ -21,14 +21,14 @@ jobs:
     steps:
       - name: Checkout source code for main
         uses: actions/checkout@v2.3.4
-        env:
-          BASE: ${{ github['base_ref'] }}
         with:
           path: fhir/
           fetch-depth: 1
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Fetch the right branch
+        env:
+          BASE: ${{ github['base_ref'] }}
         run: |
           cd fhir/
           git fetch --no-tags --prune --depth=1 origin +refs/heads/${BASE}:refs/remotes/origin/${BASE}

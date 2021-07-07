@@ -19,12 +19,6 @@ reindex_pre(){
 }
 
 ###############################################################################
-# Check if the workspace is set.
-if [ -z "${WORKSPACE}" ]
-then 
-    echo "The WORKSPACE value is unset"
-    exit -1
-fi 
 
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null

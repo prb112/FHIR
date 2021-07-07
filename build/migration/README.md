@@ -1,59 +1,96 @@
 # Integration Test Framework for the Database Migration
 
-This document outlines the end-to-end migration automation framework. 
+This document outlines the end-to-end migration automation framework that exercises the `fhir-persistence-schema` and the migration between versions.
+
+## Steps
 
 The automation runs with these steps: 
 
-- **Checkout source code** - Checks out the git code and populates the `github` environment variables.
-- **Setup Java** - Downloads and setup for Java 11
-- **Should this workflow run** - Checks to see if this is required to run, and subsequent executions are skipped.
-- **Setup prerequisites** - This step builds the required artifacts necessary to test the build with the reindex. 
-- 
+1. **Checkout source code for main** - Checks out the git code and populates the `github` environment variables.
+2. **Setup Java** - Downloads and setup for Java 11
+3. **Gather the environment details** - Gathers some rudimentary debugging details and dumps to the standard output
+4. **Determine parameters for environment variables** - Figures out the Build specific parameters:
+   - `env.migration_skip` - indicates if the migration should be skipped, e.g. no changes in the update-schema from prior release
+   - `env.migration_cache` - indicates if the workflow should cache the database instead of recreating it
+   - `env.migration_branch` - indicates the branch or release used to checkout previous
+5. **Restore the cache for the previous version** - if and only if the cache exists, we restore it.
+6. **Checks if the cache actually exists** - if the cache doesn't exist, we reset the environment variable
+7. **Checkout source code for previous** - if and only if the cache does not exist, we checkout the previous to `prev`
+8. **Setup previous release environment** - if and only if the cache does not exist, we setup the prior environment
+9. **Run previous release's Integration Tests** - if and only if the cache does not exist, we run the prior IT
+10. **Setup previous release's cached database** - if and only if the cache exists, we setup the database and start it
+11. **Migrate to the current release** - runs the update-schema
+12. **Integration Tests** - Run the reindex and current integration tests and check verison history are updated
+13. **Teardown and cleanup** - Shutsdown the Docker images and prunes the system completely
+14. **Cache the Database** - Cache the Database iff migration_cache is true
+15. **Gather error logs** - This step only runs upon a failure condition. 
+16. **Upload logs** - The step uploads the results of the integration tests and the operational logs are posted to the job. 
 
-- **Integration Tests** - The step executes the pre-integration, then integration-test and runs the post-integration scripts.
-- **Gather error logs** - This step only runs upon a failure condition. 
-- **Upload logs** - The step uploads the results of the integration tests and the operational logs are posted to the job. 
+Note, step 5 and step 14 cache the database using the [GitHub Cache Action](https://github.com/actions/cache).
 
-The GitHub Action is parameterized with a matrix for each new `$reindex` tests. Each additional entry in the array ends up creating multiple automation steps which must complete successfully for the workflow.
+## Parameters
+
+The GitHub Action is parameterized with a matrix for each migration based on the matrix parameters.
 
 ``` yaml
 strategy:
   matrix:
     datastore: [ 'db2', 'postgres' ]
-    release: ['PREVIOUS', 'PREVIOUS-1']
+      target: ['previous', 'last', '4.8.1']
+      type: ['step', 'direct']
 ```
 
-Each datastore layer that is tested as part of the framework uses the default build files and the files that match the `matrix.datastore` name added to the `reindex.yml`.
+### Parameter: **datastore**
+
+The datastore that is being tested. 
+
+Each datastore layer that is tested as part of the framework uses the default build files and the files that match the `matrix.datastore` name added to the `migration.yml`.
+
+### Parameter: **target** 
+
+The target indicates the starting point of a release number or `previous` or last `release`
 
 Each release is specified by MAJOR.MINOR.PATCH. The framework tests using the previous MINOR release, and the previous release to the previous MINOR release. 
 
 Consider the following examples to see how the selection occurs:
 
-1. **PREVIOUS**
-The build looks back to the PREVIOUS tag. The previous tag is determined based on a lexigraphical sort, so any patch-build does not reset the order.
+- **last** - The build looks back to the last tag.
+- **previous** - The build looks back to the tag PREVIOUS to the `last` tag's MINOR release. The previous tag is determined based on a lexigraphical sort, so any patch-build does not reset the order.
+- **MAJOR.MINOR.PATCH** - The build looks at the specific tag. e.g. 4.8.1
 
-2. 
+### Parameter: **type** 
+
+The type indicates how the schema is reached... `step` by step or `direct` to the current `main` schema cli
+
+## Files
+
+The following files are the files that orchestrate datastore specific tasks as well as common tasks.
 
 |Filename|Purpose|
 |----------|----------------|
-|bin/gather-logs.sh|Gathers the logs from the build|
-|bin/integration-test.sh|Run after the tests complete to release resources and package tests results|
-|bin/setup-prerequisites.sh|Builds the fhir-server|
-|bin/pre-integration-test.sh|Call the pre-integration-test step for `<datastore>` and `version`|
-|bin/post-integration-test.sh|Call the post-integration-test step for `<datastore>` and `version`|
-|`<datastore>`/integration-test.sh|if exists, overrides bin/integration-test.sh, replacing the prior test behavior.|
-|`<datastore>`/pre-integration-test.sh|Run before integration-test.sh to startup image and services for the integration testing|
-|`<datastore>`/post-integration-test.sh|if exists, runs after integration-test.sh to stop image and services from the integration testing|
-|`<datastore>`/.gitignore|Ignores files related to the reindex layer's tests|
-|`README.md`|This file describing the reindex framework|
+|`fhir/build/common/gather-environment-details.sh`|Gathers the environment details|
+|`fhir/build/migration/bin/0_determine.sh`|Determines if the build should run|
+|`fhir/build/migration/bin/1_check-cache.sh`|Checks if the file is cached and copied down|
+|`fhir/build/migration/bin/1_previous-setup.sh`|Runs the previous setup|
+|`fhir/build/migration/bin/2_previous-integration-test.sh`|Runs the previous integration tests|
+|`fhir/build/migration/bin/3_previous-teardown.sh`|Shuts down the previous server|
+|`fhir/build/migration/bin/3_previous-cache-startup.sh`|Alternatively, starts the previous cache|
+|`fhir/build/migration/bin/4_current-migrate.sh`|Migrates the database|
+|`fhir/build/migration/bin/5_current-pre-integration-test.sh`|Starts the server and runs integration tests|
+|`fhir/build/migration/bin/6_current-reindex.sh`|Starts the server and runs a reindex|
+|`fhir/build/migration/bin/7_current-integration-test.sh`|Starts the integration tests|
+|`fhir/build/migration/bin/8_teardown.sh`|Shutsdown the docker images and prunes the db|
+|`fhir/build/common/gather-logs.sh migration`|gathers the log files|
 
-Note, `<datastore>` is replaced with your reindex layer such as `db2`. 
+`fhir/` is the directory the code is the destination where `main` is checked out.
+
+The logs are in the workarea under each datastore specific set of scripts.
 
 Transaction Timeout is 300 seconds.
 
-Consult the reference implementation (`db2`) to start a new migration test. The minimum that must be implemented are the `pre-integration-test.sh` and `.gitignore`.
+Consult the reference implementation (`db2`) to start a new migration job.
 
-## Test the Automation
+## Testing the Automation
 
 To test the build, be sure to pre-set the environment variable `WORKSPACE` with `export WORKSPACE=$(pwd)`.
 You must also start Docker, so the image is built that supports the IBM FHIR Server.

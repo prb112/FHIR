@@ -9,7 +9,6 @@
 set -ex
 
 ###############################################################################
-
 # spins for a set time until the server is up
 wait_for_it(){
     # Wait until the fhir server is up and running...

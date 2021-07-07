@@ -12,13 +12,13 @@ set -ex
 # output the environment details
 ###############################################################################
 
-echo "Reporting on the disk space: "
+echo "Reporting on the disk space:"
 df -h
 
-echo "Reporting on the docker setup: "
+echo "Reporting on the docker setup:"
 docker info
 
-echo "Reporting on the Docker system setup: "
+echo "Reporting on the Docker system setup:"
 docker system info
 
 # EOF

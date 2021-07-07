@@ -120,5 +120,7 @@ generate_between_tag_changelog
 should_run
 pick_version "${1}"
 
+echo "migration_cache=false" >> $GITHUB_ENV
+
 # EOF
 ###############################################################################

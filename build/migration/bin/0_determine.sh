@@ -89,7 +89,7 @@ should_run() {
 # From the Matrix, at least one is passed in: release: ['latest', 'previous', 'MAJOR.MINOR.PATCH']
 pick_version() {
     INPUT="${1}"
-    if [ "latest" == "${INPUT}" ]
+    if [ "last" == "${INPUT}" ]
     then
         VERSION=$(git tag --sort=-v:refname | grep -v '-' | head -1)
     elif [ "previous" == "${INPUT}" ]

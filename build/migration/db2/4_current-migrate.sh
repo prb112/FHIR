@@ -10,32 +10,19 @@ set -ex
 set -o pipefail
 
 ###############################################################################
+
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null
 
-# Change to the migration directory
-cd "${WORKSPACE}/fhir/build/migration/${1}/"
+# Change to the migration/bin directory
+cd "fhir/build/migrate/db2"
 
-docker-compose down
-
-cx=0
-while [ $(docker container ls -q | wc -l) -gt 0 ]
-do
-    echo "Waiting on shutdown of db ${cx}"
-    cx=$((cx + 1))
-    if [ ${cx} -ge 300 ]
-    then
-        echo "Failed to start"
-        break
-    fi
-    sleep 10
-done
-
-echo "Creating the database cache"
-tar czf ../workarea/db.tgz workarea/volumes/dist/db
-
-echo "Details for the db.tgz"
-ls -al ../workarea/db.tgz
+echo ">>> Persistence >>> current is being run"
+echo 'change-password' > tenant.key
+java -jar ${WORKSPACE}/prev/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
+    --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \
+    --prop user=db2inst1 --prop password=change-password \
+    --update-schema
 
 # Reset to Original Directory
 popd > /dev/null

@@ -12,10 +12,10 @@ set -o pipefail
 run_migrate(){
     migration="${1}"
 
-    if [ ! -z "${migration}" ] && [ -f "build/migration/${migration}/4_current-migrate.sh" ]
+    if [ ! -z "${migration}" ] && [ -f "${WORKSPACE}/fhir/build/migration/${migration}/4_current-migrate.sh" ]
     then 
         echo "Running [${migration}] migration"
-        bash build/migration/${migration}/4_current-migrate.sh
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/4_current-migrate.sh
     fi
 }
 

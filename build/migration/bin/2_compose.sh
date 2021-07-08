@@ -7,7 +7,7 @@
 ###############################################################################
 
 set -e
-set +x
+set -x
 
 # startup_database - startup database
 startup_database(){

@@ -110,7 +110,7 @@ jobs:
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
-          bash fhir/build/migration/bin/4_current-migrate.sh ${{matrix.datastore}} ${{matrix.type}}
+          bash fhir/build/migration/bin/4_current-migrate.sh ${{matrix.datastore}}
 
       - name: Integration Tests
         if: "!contains(env.migration_skip, 'true')"
@@ -127,7 +127,6 @@ jobs:
           WORKSPACE: ${{ github.workspace }}
         run: |
           bash fhir/build/migration/bin/8_teardown.sh ${{matrix.datastore}}
-
 
       - name: Cache the Database
         if: "contains(env.migration_cache, 'true')"
@@ -147,5 +146,5 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2.2.0
         with:
-          name: integration-test-results-${{ matrix.datastore }}-${{ matrix.type }}-${{ matrix.target }}
+          name: integration-test-results-${{ matrix.datastore }}-${{ matrix.release }}
           path: build/migration/integration-test-results

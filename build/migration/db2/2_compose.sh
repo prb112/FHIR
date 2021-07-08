@@ -81,7 +81,7 @@ bringup(){
             echo "Failed to start"
             break
         fi
-        sleep 1
+        sleep 10
     done
 
     echo ">>> Persistence >>> previous is being run"

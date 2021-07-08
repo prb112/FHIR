@@ -72,7 +72,8 @@ bringup(){
     docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status'
     echo "Debug All Details >>> "
     docker container inspect db2_db_1 | jq -r '.[]'
-    while [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Running' | grep false | wc -l) -eq 1 ]
+
+    while [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Health.Status' | grep starting | wc -l) -eq 1 ]
     do
         echo "Waiting on startup of db ${cx}"
         cx=$((cx + 1))

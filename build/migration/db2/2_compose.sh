@@ -166,7 +166,7 @@ bringup(){
 
 ###############################################################################
 
-cd build/reindex/db2
+cd build/migration/db2
 pre_integration
 
 # EOF

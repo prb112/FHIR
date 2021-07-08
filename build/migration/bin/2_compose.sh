@@ -26,7 +26,7 @@ pushd $(pwd) > /dev/null
 # Change to the release directory
 cd "${WORKSPACE}/fhir"
 
-startup_database
+startup_database "${1}"
 
 # Reset to Original Directory
 popd > /dev/null

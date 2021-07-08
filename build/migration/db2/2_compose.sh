@@ -9,7 +9,6 @@
 set -e
 set +x
 
-
 # create compose
 pre_integration(){
     cleanup

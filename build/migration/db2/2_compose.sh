@@ -19,7 +19,7 @@ pre_integration(){
 
 # setup_docker - setup docker
 setup_docker(){
-    docker build -t test/fhir-db2 db/
+    docker build -t test/fhir-db2 resources/
 }
 
 # config - update configuration

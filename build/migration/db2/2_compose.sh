@@ -21,6 +21,7 @@ pre_integration(){
 setup_docker(){
     pushd $(pwd) > /dev/null 
     cd ${WORKSPACE}/fhir/build/migration/db2
+    mkdir -p ${WORKSPACE}/fhir/build/migration/db2/workarea/volumes/dist/db
     docker build -t test/fhir-db2 resources/
     popd
 }
@@ -67,6 +68,10 @@ bringup(){
     # Startup db
     docker-compose up --remove-orphans -d db
     cx=0
+    echo "Debug Details >>> "
+    docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status'
+    echo "Debug All Details >>> "
+    docker container inspect db2_db_1 | jq -r '.[]'
     while [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Running' | grep false | wc -l) -eq 1 ]
     do
         echo "Waiting on startup of db ${cx}"

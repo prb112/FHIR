@@ -18,7 +18,7 @@ shutdown_fhir(){
 pushd $(pwd) > /dev/null
 
 # Change to the migration/bin directory
-cd ${WORKSPACE}/prev/build/migration/db2/"
+cd "${WORKSPACE}/prev/build/migration/db2/"
 
 shutdown_fhir
 

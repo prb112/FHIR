@@ -74,6 +74,7 @@ bringup(){
         if [ ${cx} -ge 300 ]
         then
             echo "Failed to start"
+            break
         fi
         sleep 1
     done

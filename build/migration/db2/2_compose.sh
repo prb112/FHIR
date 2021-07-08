@@ -80,15 +80,15 @@ bringup(){
 
     echo ">>> Persistence >>>"
     echo 'change-password' > tenant.key
-    java -jar ${WORKSPACE}/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
+    java -jar ${WORKSPACE}/fhir/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
         --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \
         --prop user=db2inst1 --prop password=change-password \
         --create-schemas
-    java -jar ${WORKSPACE}/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
+    java -jar ${WORKSPACE}/fhir/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
         --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \
         --prop user=db2inst1 --prop password=change-password \
         --update-schema
-    java -jar ${WORKSPACE}/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
+    java -jar ${WORKSPACE}/fhir/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
         --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \
         --prop user=db2inst1 --prop password=change-password \
         --allocate-tenant default --tenant-key-file tenant.key --grant-to fhirserver

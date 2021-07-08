@@ -19,7 +19,10 @@ pre_integration(){
 
 # setup_docker - setup docker
 setup_docker(){
+    pushd $(pwd) > /dev/null 
+    cd ${WORKSPACE}/fhir/build/migration/db2
     docker build -t test/fhir-db2 resources/
+    popd
 }
 
 # config - update configuration

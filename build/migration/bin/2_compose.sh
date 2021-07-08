@@ -16,6 +16,9 @@ startup_database(){
     then
         echo "Running [${migration}] setting up prerequisites"
         bash ${WORKSPACE}/fhir/build/migration/${migration}/2_compose.sh
+    else
+        echo "Docker Compose is not up and running"
+        exit 1
     fi
 }
 

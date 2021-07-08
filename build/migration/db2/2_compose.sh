@@ -47,6 +47,7 @@ config(){
     echo "Copying over the overrides for the datasource"
     mkdir -p ${DIST}/overrides
     cp ${WORKSPACE}/prev/fhir-server/liberty-config/configDropins/disabled/datasource-db2.xml ${DIST}/overrides
+    cp -p ${WORKSPACE}/prev/fhir-server/liberty-config/configDropins/disabled/datasource-derby.xml ${DIST}/overrides
 
     # Move over the test configurations
     echo "Copying over the fhir-server-config.json and updating publishing"

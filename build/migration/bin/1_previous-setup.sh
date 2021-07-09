@@ -35,7 +35,7 @@ required_build(){
 
     # Build dockerfile
     cd fhir-install
-    docker build -t ibmcom/ibm-fhir-server:latest .
+    docker build -t fhir-migration:latest .
     cd ..
 }
 

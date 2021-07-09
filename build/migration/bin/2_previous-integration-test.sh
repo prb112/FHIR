@@ -21,9 +21,14 @@ run_tests(){
         echo "Running containers are:"
         docker container ls -a
         echo ""
+
+        echo "fhir container are:"
+        docker container inspect $(docker container ls | grep fhir_1 | awk '{print $NF}' ) | jq -r '.[]'
+        echo ""
+
         echo "Running Integration tests: "
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
-            -DskipTests=false || docker container logs "db2_fhir_1" || exit 1
+            -DskipTests=false -Dexcludes=MultiDataStoreTest,FHIROperationTest || docker container logs "db2_fhir_1" || exit 1
         echo "Done Running Tests"
         echo ""
     fi

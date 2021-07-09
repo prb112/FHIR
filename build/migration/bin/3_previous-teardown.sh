@@ -30,7 +30,7 @@ previous_teardown(){
 pushd $(pwd) > /dev/null
 
 # Change to the migration/bin directory
-cd "${WORKSPACE}/prev/build/migration/${1}/"
+cd "${WORKSPACE}/fhir/build/migration/${1}/"
 
 shutdown_fhir
 previous_teardown "${1}"

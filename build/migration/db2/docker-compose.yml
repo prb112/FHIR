@@ -24,7 +24,7 @@ services:
     networks:
       - fhir
   fhir:
-    image: fhir-migration:latest
+    image: test/fhir-migration
     depends_on:
       db:
         condition: service_healthy

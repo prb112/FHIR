@@ -43,6 +43,7 @@ config(){
     USERLIB="${DIST}/userlib"
     mkdir -p "${USERLIB}"
     find ${WORKSPACE}/prev/conformance -iname 'fhir-ig*.jar' -not -iname 'fhir*-tests.jar' -not -iname 'fhir*-test-*.jar' -exec cp -f {} ${USERLIB} \;
+    find ${WORKSPACE}/prev/operation/fhir-operation-test/target -iname '*.jar' -exec cp -f {} ${USERLIB} \;
 
     echo "Copying over the overrides for the datasource"
     mkdir -p ${DIST}/overrides
@@ -54,7 +55,9 @@ config(){
     jq '.fhirServer.notifications.nats.enabled = false' ${DIST}/config/default/fhir-server-config-db2.json > ${DIST}/config/default/fhir-server-config-t.json
     jq '.fhirServer.persistence.datasources.default.tenantKey = "change-password"' ${DIST}/config/default/fhir-server-config-t.json > ${DIST}/config/default/fhir-server-config.json
 
+    echo "Reporting the files in the 'userlib' folder:"
     find ${DIST}
+    echo ""
 }
 
 # cleanup - cleanup existing docker

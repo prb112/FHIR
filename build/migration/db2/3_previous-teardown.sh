@@ -32,10 +32,10 @@ do
 done
 
 echo "Creating the database cache"
-tar czf ../workarea/db.tgz workarea/volumes/dist/db
+tar czf ${WORKSPACE}/fhir/build/migration/${1}/workarea/db.tgz ${WORKSPACE}/fhir/build/migration/${1}/workarea/volumes/dist/db
 
 echo "Details for the db.tgz"
-ls -al ../workarea/db.tgz
+ls -al ${WORKSPACE}/fhir/build/migration/${1}/workarea/db.tgz
 
 # Reset to Original Directory
 popd > /dev/null

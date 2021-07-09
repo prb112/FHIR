@@ -35,7 +35,7 @@ required_build(){
 
     # Build dockerfile
     cd fhir-install
-    docker build -t fhir-migration:latest .
+    docker build -t test/fhir-migration .
     cd ..
 }
 

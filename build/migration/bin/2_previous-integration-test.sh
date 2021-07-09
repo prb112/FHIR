@@ -7,7 +7,6 @@
 ###############################################################################
 
 set -ex
-set -o pipefail
 
 run_tests(){
     # The integration tests may be overriden completely, or fall through to the default. 
@@ -20,7 +19,7 @@ run_tests(){
     else
         # Runs the migration tests
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
-            -DskipTests=false || docker container logs fhir_fhir_1
+            -DskipTests=false || docker container logs fhir_fhir_1 || exit 1
     fi
 }
 

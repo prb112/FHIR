@@ -18,8 +18,14 @@ run_tests(){
         bash ${WORKSPACE}/fhir/build/migration/${migration}/2_previous-integration-test.sh
     else
         # Runs the migration tests
+        echo "Running containers are:"
+        docker container ls -a
+        echo ""
+        echo "Running Integration tests: "
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
-            -DskipTests=false || docker container logs fhir_fhir_1 || exit 1
+            -DskipTests=false || docker container logs "$(docker container ls -a --format='{{.Names}}' | grep -v db)" || exit 1
+        echo "Done Running Tests"
+        echo ""
     fi
 }
 

@@ -35,8 +35,16 @@ services:
         target: /opt/ol/wlp/usr/servers/defaultServer/config
         read_only: true
       - type: bind
+        source: ./workarea/volumes/dist/config
+        target: /opt/ol/wlp/usr/servers/fhir-server/config
+        read_only: true
+      - type: bind
         source: ./workarea/volumes/dist/overrides
         target: /opt/ol/wlp/usr/servers/defaultServer/configDropins/overrides
+        read_only: true
+      - type: bind
+        source: ./workarea/volumes/dist/overrides
+        target: /opt/ol/wlp/usr/servers/fhir-server/configDropins/overrides
         read_only: true
     healthcheck:
       start_period: 120s

@@ -9,18 +9,13 @@
 set -ex
 set -o pipefail
 
-# shutdown_fhir
-shutdown_fhir(){
-    docker-compose down fhir
-}
-
 # previous_teardown
 previous_teardown(){
     migration="${1}"
     if [ -f "${WORKSPACE}/fhir/build/migration/${migration}/3_previous-teardown.sh" ]
     then
         echo "Running [${migration}] setting setup prerequisites"
-        bash ${WORKSPACE}/fhir/build/migration/${migration}/3_previous-teardown.sh
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/3_previous-teardown.sh "${1}"
     fi
 }
 
@@ -32,7 +27,6 @@ pushd $(pwd) > /dev/null
 # Change to the migration/bin directory
 cd "${WORKSPACE}/fhir/build/migration/${1}/"
 
-shutdown_fhir
 previous_teardown "${1}"
 
 # Reset to Original Directory

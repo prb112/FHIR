@@ -28,7 +28,7 @@ run_tests(){
 
         echo "Running Integration tests: "
         mvn -B test -f fhir-server-test -DskipWebSocketTest=true --no-transfer-progress \
-            -DskipTests=false -Dexcludes=MultiDataStoreTest,FHIROperationTest || docker container logs "db2_fhir_1" || exit 1
+            -DskipTests=false -Dexcludes=MultiDataStoreTest,FHIROperationTest || docker container logs "db2_fhir_1" && exit 1
         echo "Done Running Tests"
         echo ""
     fi

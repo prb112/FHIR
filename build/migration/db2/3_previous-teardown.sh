@@ -32,6 +32,7 @@ do
 done
 
 echo "Creating the database cache"
+chmod -R 755 ${WORKSPACE}/fhir/build/migration/${1}/workarea/volumes/dist/db
 tar czf ${WORKSPACE}/fhir/build/migration/${1}/workarea/db.tgz ${WORKSPACE}/fhir/build/migration/${1}/workarea/volumes/dist/db
 
 echo "Details for the db.tgz"

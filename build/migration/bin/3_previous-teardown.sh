@@ -19,7 +19,6 @@ previous_teardown(){
     fi
 }
 
-
 ###############################################################################
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null

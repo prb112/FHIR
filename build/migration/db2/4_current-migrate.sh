@@ -17,6 +17,28 @@ pushd $(pwd) > /dev/null
 # Change to the migration/bin directory
 cd "${WORKSPACE}/fhir/build/migration/db2"
 
+# Startup db
+docker-compose up --remove-orphans -d db
+
+echo "Debug Details >>> "
+docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status'
+
+echo "Debug All Details >>> "
+docker container inspect db2_db_1 | jq -r '.[]'
+
+cx=0
+while [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Health.Status' | grep starting | wc -l) -eq 1 ]
+do
+    echo "Waiting on startup of db ${cx}"
+    cx=$((cx + 1))
+    if [ ${cx} -ge 300 ]
+    then
+        echo "Failed to start"
+        break
+    fi
+    sleep 10
+done
+
 echo ">>> Persistence >>> current is being run"
 echo 'change-password' > tenant.key
 java -jar ${WORKSPACE}/fhir/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \

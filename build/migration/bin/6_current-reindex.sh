@@ -19,9 +19,19 @@ run_reindex(){
     else
         # Run the $reindex
         i=1
-        until curl -s -k -i -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d '{"resourceType": "Parameters","parameter":[{"name":"resourceCount","valueInteger":100},{"name":"tstamp","valueString":"2021-07-02T16:40:00Z"}]}' -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: pglocal' | grep -q "Reindex complete"
+
+        # Date YYYY-MM-DDTHH:MM:SSZ
+        DATE_ISO=$(date -j +%Y-%m-%dT-%H:%M:%SZ)
+        status=$(curl -o reindex.json -s -k -i --max-time 5 -I -w "%{http_code}" -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}" -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default')
+        while [ $status -ne 200 ]
         do
-            echo $((++i))
+            i=$((i+1))
+            if [ $(cat reindex.json | grep -c "Reindex complete") -eq 1 ]
+            then
+                echo "${i}"
+                break
+            fi
+            status=$(curl -o reindex.json -s -k -i --max-time 5 -I -w "%{http_code}" -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}" -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default')
         done
     fi
 }

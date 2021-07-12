@@ -8,13 +8,22 @@
 
 set -ex
 
-# reindex_pre - executes for each reindex pre integration steps
-reindex_pre(){
-    reindex="${1}"
-    if [ ! -z "${reindex}" ] && [ -f build/reindex/${reindex}/pre-integration-test.sh ]
+# migration_pre - executes for each migration pre integration steps
+migration_pre(){
+    migration="${1}"
+    
+    echo "Building the current docker image and the current java artifacts"
+    pushd $(pwd) > /dev/null
+    cd "${WORKSPACE}"
+    mvn -T2C -B install --file fhir-examples --no-transfer-progress
+    mvn -T2C -B install --file fhir-parent -DskipTests -P include-fhir-igs,integration --no-transfer-progress
+    docker build -t test/fhir-db2 resources/
+    popd > /dev/null
+
+    if [ ! -z "${migration}" ] && [ -f build/migration/${migration}/pre-integration-test.sh ]
     then 
-        echo "Running [${reindex}] pre-integration-test"
-        bash build/reindex/${reindex}/pre-integration-test.sh
+        echo "Running [${migration}] pre-integration-test"
+        bash build/migration/${migration}/pre-integration-test.sh
     fi
 }
 
@@ -23,10 +32,10 @@ reindex_pre(){
 # Store the current directory to reset to
 pushd $(pwd) > /dev/null
 
-# Change to the reindex_pre
+# Change to the migration_pre
 cd "${WORKSPACE}"
 
-reindex_pre "${1}"
+migration_pre "${1}"
 
 # Reset to Original Directory
 popd > /dev/null

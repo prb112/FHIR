@@ -17,7 +17,7 @@ The automation runs with these steps:
 6. **Restore the cache for the previous version** - if and only if the cache exists, we restore it.
 7. **Checks if the cache actually exists** - if the cache doesn't exist, we reset the environment variable
 8. **Checkout source code for previous** - if and only if the cache does not exist, we checkout the previous to `prev`
-9. **Setup previous release environment** - if and only if the cache does not exist, we setup the prior environment
+9. **Setup docker-compose and database** - if and only if the cache does not exist, we setup the prior environment
 10. **Run previous release's Integration Tests** - if and only if the cache does not exist, we run the prior IT
 11. **Setup previous release's cached database** - if and only if the cache exists, we setup the database and start it
 12. **Migrate to the current release** - runs the update-schema
@@ -70,17 +70,19 @@ The following files are the files that orchestrate datastore specific tasks as w
 |`fhir/build/migration/bin/0_determine.sh`|Determines if the build should run|
 |`fhir/build/migration/bin/1_check-cache.sh`|Checks if the file is cached and copied down|
 |`fhir/build/migration/bin/1_previous-setup.sh`|Runs the previous setup|
+|`fhir/build/migration/bin/2_compose.sh`|Setup docker compose and database used in previous release|
 |`fhir/build/migration/bin/2_previous-integration-test.sh`|Runs the previous integration tests|
 |`fhir/build/migration/bin/3_previous-teardown.sh`|Shuts down the previous server|
 |`fhir/build/migration/bin/3_previous-cache-startup.sh`|Alternatively, starts the previous cache|
 |`fhir/build/migration/bin/4_current-migrate.sh`|Migrates the database|
-|`fhir/build/migration/bin/5_current-pre-integration-test.sh`|Starts the server and runs integration tests|
-|`fhir/build/migration/bin/6_current-reindex.sh`|Starts the server and runs a reindex|
-|`fhir/build/migration/bin/7_current-integration-test.sh`|Starts the integration tests|
-|`fhir/build/migration/bin/8_teardown.sh`|Shutsdown the docker images and prunes the db|
+|`fhir/build/migration/bin/5_current-pre-integration-test.sh`|Starts the server with the current settings|
+|`fhir/build/migration/bin/6_current-reindex.sh`|Runs a reindex|
+|`fhir/build/migration/bin/7_current-integration-test.sh`|Starts the current integration tests|
+|`fhir/build/migration/bin/8_teardown.sh`|Shuts down the docker images and prunes the db|
 |`fhir/build/common/gather-logs.sh migration`|gathers the log files|
 
 `fhir/` is the directory the code is the destination where `main` is checked out.
+`prev/` is the directory the previous release is checked out to, which is generally a tag.
 
 The logs are in the workarea under each datastore specific set of scripts.
 

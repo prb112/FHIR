@@ -15,7 +15,7 @@ set -o pipefail
 pushd $(pwd) > /dev/null
 
 # Change to the migration/bin directory
-cd "fhir/build/migrate/db2"
+cd "${WORKSPACE}/fhir/build/migrate/db2"
 
 echo ">>> Persistence >>> current is being run"
 echo 'change-password' > tenant.key

@@ -14,7 +14,7 @@ run_migrate(){
 
     echo "Building the current docker image and the current java artifacts"
     pushd $(pwd) > /dev/null
-    cd "${WORKSPACE}"
+    cd "${WORKSPACE}/fhir"
     mvn -T2C -B install --file fhir-examples --no-transfer-progress
     mvn -T2C -B install --file fhir-parent -DskipTests -P include-fhir-igs,integration --no-transfer-progress
 

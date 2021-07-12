@@ -12,6 +12,17 @@ set -o pipefail
 run_migrate(){
     migration="${1}"
 
+    echo "Building the current docker image and the current java artifacts"
+    pushd $(pwd) > /dev/null
+    cd "${WORKSPACE}"
+    mvn -T2C -B install --file fhir-examples --no-transfer-progress
+    mvn -T2C -B install --file fhir-parent -DskipTests -P include-fhir-igs,integration --no-transfer-progress
+
+    cd fhir-install
+    docker build -t test/fhir-migration .
+    cd ..
+    popd > /dev/null
+
     if [ ! -z "${migration}" ] && [ -f "${WORKSPACE}/fhir/build/migration/${migration}/4_current-migrate.sh" ]
     then 
         echo "Running [${migration}] migration"

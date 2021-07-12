@@ -11,16 +11,8 @@ set -ex
 # migration_pre - executes for each migration pre integration steps
 migration_pre(){
     migration="${1}"
-    
-    echo "Building the current docker image and the current java artifacts"
-    pushd $(pwd) > /dev/null
-    cd "${WORKSPACE}"
-    mvn -T2C -B install --file fhir-examples --no-transfer-progress
-    mvn -T2C -B install --file fhir-parent -DskipTests -P include-fhir-igs,integration --no-transfer-progress
-    docker build -t test/fhir-db2 resources/
-    popd > /dev/null
 
-    if [ ! -z "${migration}" ] && [ -f build/migration/${migration}/pre-integration-test.sh ]
+    if [ ! -z "${migration}" ] && [ -f build/migration/${migration}/5_current-pre-integration-test.sh ]
     then 
         echo "Running [${migration}] pre-integration-test"
         bash build/migration/${migration}/pre-integration-test.sh

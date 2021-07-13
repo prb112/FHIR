@@ -72,6 +72,7 @@ cleanup(){
 # bringup
 bringup(){
     PREVIOUS_VERSION="${1}"
+    echo "Previous Version: ${PREVIOUS_VERSION}"
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
     IMAGE_VERSION="${PREVIOUS_VERSION}" docker-compose build

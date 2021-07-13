@@ -28,6 +28,18 @@ run_reindex(){
         cat reindex.json
         while [ $status -ne 200 ]
         do
+            if [ $status -eq 400 ]
+            then
+                echo "bad request on the client side"
+                cat reindex.json
+                exit 20
+            fi
+            if [ $status -eq 500 ]
+            then
+                echo "bad results on the server side"
+                cat reindex.json
+                exit 10
+            fi
             i=$((i+1))
             if [ $(cat reindex.json | grep -c "Reindex complete") -eq 1 ]
             then
@@ -38,7 +50,6 @@ run_reindex(){
                 -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default' \
                 -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}")
             echo "Status: ${status}"
-            cat reindex.json
         done
     fi
 }

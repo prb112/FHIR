@@ -74,6 +74,20 @@ bringup(){
         fi
         sleep 10
     done
+
+    # Startup FHIR
+    docker-compose up --remove-orphans -d fhir
+    cx=0
+    while [ $(docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_fhir_1  | jq -r '.[] | select (.Config.Hostname == "fhir").State.Health.Status' | grep running | wc -l) -eq 1 ]
+    do
+        echo "Waiting on startup of fhir ${cx}"
+        cx=$((cx + 1))
+        if [ ${cx} -ge 300 ]
+        then
+            echo "Failed to start fhir"
+        fi
+        sleep 1
+    done
 }
 
 ###############################################################################

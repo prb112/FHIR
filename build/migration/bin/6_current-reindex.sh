@@ -21,7 +21,7 @@ run_reindex(){
         i=1
 
         # Date YYYY-MM-DDTHH:MM:SSZ
-        DATE_ISO=$(date -j +%Y-%m-%dT-%H:%M:%SZ)
+        DATE_ISO=$(date +%Y-%m-%dT-%H:%M:%SZ)
         status=$(curl -o reindex.json -s -k -i --max-time 5 -I -w "%{http_code}" -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}" -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default')
         while [ $status -ne 200 ]
         do

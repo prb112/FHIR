@@ -75,7 +75,7 @@ bringup(){
     echo "Previous Version: ${PREVIOUS_VERSION}"
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
-    docker-compose build help
+    docker-compose help build 
     export IMAGE_VERSION="${PREVIOUS_VERSION}"
     IMAGE_VERSION="${PREVIOUS_VERSION}" docker-compose build
     docker-compose up --remove-orphans -d db

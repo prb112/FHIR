@@ -24,7 +24,7 @@ services:
     networks:
       - fhir
   fhir:
-    image: test/fhir-migration
+    image: ibmcom/ibm-fhir-server:${IMAGE_VERSION}
     depends_on:
       db:
         condition: service_healthy

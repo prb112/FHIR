@@ -72,6 +72,7 @@ cleanup(){
 bringup(){
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
+    IMAGE_VERSION=${previous_release} docker-compose build
     docker-compose up --remove-orphans -d db
     cx=0
     echo "Debug Details >>> "

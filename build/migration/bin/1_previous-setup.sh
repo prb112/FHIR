@@ -32,11 +32,6 @@ required_build(){
     df -h
 
     docker version
-
-    # Build dockerfile
-    cd fhir-install
-    docker build -t test/fhir-migration .
-    cd ..
 }
 
 # migration_build - executes for each migration type.

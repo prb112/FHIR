@@ -9,6 +9,8 @@
 set -e
 set +x
 
+PREVIOUS_VERSION="${1}"
+
 # create compose
 pre_integration(){
     cleanup
@@ -72,7 +74,7 @@ cleanup(){
 bringup(){
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
-    IMAGE_VERSION=${previous_release} docker-compose build
+    IMAGE_VERSION="${PREVIOUS_VERSION}" docker-compose build
     docker-compose up --remove-orphans -d db
     cx=0
     echo "Debug Details >>> "

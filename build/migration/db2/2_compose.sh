@@ -9,14 +9,13 @@
 set -e
 set +x
 
-PREVIOUS_VERSION="${1}"
-
 # create compose
 pre_integration(){
+    PREVIOUS_VERSION="${1}"
     cleanup
     setup_docker
     config
-    bringup
+    bringup "${PREVIOUS_VERSION}"
 }
 
 # setup_docker - setup docker
@@ -72,6 +71,7 @@ cleanup(){
 
 # bringup
 bringup(){
+    PREVIOUS_VERSION="${1}"
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
     IMAGE_VERSION="${PREVIOUS_VERSION}" docker-compose build
@@ -183,7 +183,7 @@ bringup(){
 ###############################################################################
 
 cd build/migration/db2
-pre_integration
+pre_integration "${1}"
 
 # EOF
 ###############################################################################

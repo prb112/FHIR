@@ -6,8 +6,7 @@
 # SPDX-License-Identifier: Apache-2.0
 ###############################################################################
 
-set -ex
-set -o pipefail
+set -x
 
 run_reindex(){
     migration="${1}"
@@ -23,6 +22,8 @@ run_reindex(){
         # Date YYYY-MM-DDTHH:MM:SSZ
         DATE_ISO=$(date +%Y-%m-%dT-%H:%M:%SZ)
         status=$(curl -o reindex.json -s -k -i --max-time 5 -I -w "%{http_code}" -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}" -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default')
+        echo "Status: ${status}"
+        cat reindex.json
         while [ $status -ne 200 ]
         do
             i=$((i+1))
@@ -32,6 +33,8 @@ run_reindex(){
                 break
             fi
             status=$(curl -o reindex.json -s -k -i --max-time 5 -I -w "%{http_code}" -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}" -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default')
+            echo "Status: ${status}"
+            cat reindex.json
         done
     fi
 }

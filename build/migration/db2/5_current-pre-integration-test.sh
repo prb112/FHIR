@@ -53,6 +53,7 @@ config(){
 
 # bringup
 bringup(){
+    cd ${WORKSPACE}/fhir/build/migration/db2
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
     IMAGE_VERSION=latest docker-compose build

@@ -98,7 +98,7 @@ bringup(){
 
 ###############################################################################
 
-cd ${WORKSPACE}/build/migration/db2
+cd ${WORKSPACE}/fhir/build/migration/db2
 pre_integration "${1}"
 
 # EOF

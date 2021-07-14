@@ -15,7 +15,7 @@ migration_pre(){
     if [ ! -z "${migration}" ] && [ -f ${WORKSPACE}/build/migration/${migration}/5_current-pre-integration-test.sh ]
     then 
         echo "Running [${migration}] pre-integration-test"
-        bash ${WORKSPACE}/build/migration/${migration}/pre-integration-test.sh
+        bash ${WORKSPACE}/build/migration/${migration}/5_current-pre-integration-test.sh
     fi
 }
 

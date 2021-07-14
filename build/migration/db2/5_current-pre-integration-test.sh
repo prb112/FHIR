@@ -36,10 +36,10 @@ config(){
     find ${WORKSPACE}/fhir/conformance -iname 'fhir-ig*.jar' -not -iname 'fhir*-tests.jar' -not -iname 'fhir*-test-*.jar' -exec cp -f {} ${USERLIB} \;
     find ${WORKSPACE}/fhir/operation/fhir-operation-test/target -iname '*.jar' -exec cp -f {} ${USERLIB} \;
 
-    echo "Copying over the overrides for the datasource"
-    mkdir -p ${DIST}/overrides
+    echo "Remove the old overrides, and copy the current overrides for the datasource"
     rm -rf ${DIST}/overrides
-    cp ${WORKSPACE}/fhir/fhir-server/liberty-config/configDropins/disabled/datasource-db2.xml ${DIST}/overrides
+    mkdir -p ${DIST}/overrides
+    cp -p ${WORKSPACE}/fhir/fhir-server/liberty-config/configDropins/disabled/datasource-db2.xml ${DIST}/overrides
     cp -p ${WORKSPACE}/fhir/fhir-server/liberty-config/configDropins/disabled/datasource-derby.xml ${DIST}/overrides
 
     # Move over the test configurations
@@ -47,8 +47,10 @@ config(){
     jq '.fhirServer.notifications.nats.enabled = false' ${DIST}/config/default/fhir-server-config-db2.json > ${DIST}/config/default/fhir-server-config-t.json
     jq '.fhirServer.persistence.datasources.default.tenantKey = "change-password"' ${DIST}/config/default/fhir-server-config-t.json > ${DIST}/config/default/fhir-server-config.json
 
-    echo "Reporting the files in the 'userlib' folder:"
-    find ${DIST}
+    echo "Reporting the files in the 'dist' folder:"
+    find ${DIST}/userlib
+    find ${DIST}/config
+    find ${DIST}/overrides
     echo ""
 }
 
@@ -64,10 +66,10 @@ bringup(){
     IMAGE_VERSION=latest docker-compose build
     docker-compose up --remove-orphans -d db
     cx=0
-    echo "Debug Details >>> "
-    docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status'
-    echo "Debug All Details >>> "
-    docker container inspect db2_db_1 | jq -r '.[]'
+    echo "Debug Details >>> $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status')"
+    # Add this back in when debugging.
+    # echo "Debug All Details >>> "
+    # docker container inspect db2_db_1 | jq -r '.[]'
 
     while [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_db_1 | jq -r '.[] | select (.Config.Hostname == "db2").State.Health.Status' | grep starting | wc -l) -eq 1 ]
     do

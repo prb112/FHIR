@@ -116,7 +116,7 @@ jobs:
         env:
           WORKSPACE: ${{ github.workspace }}
         run: |
-          bash fhir/build/migration/bin/5_current-pre-integration-test.sh ${{matrix.datastore}}
+          bash fhir/build/migration/bin/5_current-pre-integration-test.sh ${{matrix.datastore}} ${{ env.migration_branch }}
           bash fhir/build/migration/bin/6_current-reindex.sh ${{matrix.datastore}}
           bash fhir/build/migration/bin/7_current-integration-test.sh ${{matrix.datastore}}
 

@@ -11,11 +11,11 @@ set -ex
 # migration_pre - executes for each migration pre integration steps
 migration_pre(){
     migration="${1}"
-
+    version="${2}"
     if [ ! -z "${migration}" ] && [ -f ${WORKSPACE}/fhir/build/migration/${migration}/5_current-pre-integration-test.sh ]
     then 
-        echo "Running [${migration}] pre-integration-test"
-        bash ${WORKSPACE}/fhir/build/migration/${migration}/5_current-pre-integration-test.sh
+        echo "Running [${migration}] current pre-integration-test"
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/5_current-pre-integration-test.sh "${version}"
     fi
 }
 

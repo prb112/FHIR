@@ -27,7 +27,7 @@ pushd $(pwd) > /dev/null
 # Change to the migration_pre
 cd "${WORKSPACE}"
 
-migration_pre "${1}"
+migration_pre "${1}" "${2}"
 
 # Reset to Original Directory
 popd > /dev/null

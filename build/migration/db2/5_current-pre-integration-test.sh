@@ -55,7 +55,7 @@ config(){
 # bringup
 bringup(){
     PREVIOUS_VERSION="${1}"
-    echo "Previous Version: ${PREVIOUS_VERSION}"
+    echo "Previous Version: '${PREVIOUS_VERSION}'"
     
     cd ${WORKSPACE}/fhir/build/migration/db2
     echo "Bringing up containers >>> Current time: " $(date)

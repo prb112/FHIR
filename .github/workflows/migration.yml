@@ -111,7 +111,7 @@ jobs:
         run: |
           bash fhir/build/migration/bin/4_current-migrate.sh ${{matrix.datastore}}
 
-      - name: Integration Tests
+      - name: Run current Integration Tests
         if: "!contains(env.migration_skip, 'true')"
         env:
           WORKSPACE: ${{ github.workspace }}

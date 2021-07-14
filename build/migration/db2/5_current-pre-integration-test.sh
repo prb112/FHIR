@@ -10,8 +10,9 @@ set +x
 
 # create compose
 pre_integration(){
+    PREVIOUS_VERSION="${1}"
     config
-    bringup
+    bringup "${PREVIOUS_VERSION}"
 }
 
 # config - update configuration
@@ -53,9 +54,13 @@ config(){
 
 # bringup
 bringup(){
+    PREVIOUS_VERSION="${1}"
+    echo "Previous Version: ${PREVIOUS_VERSION}"
+    
     cd ${WORKSPACE}/fhir/build/migration/db2
     echo "Bringing up containers >>> Current time: " $(date)
     # Startup db
+    export IMAGE_VERSION="${PREVIOUS_VERSION}"
     IMAGE_VERSION=latest docker-compose build
     docker-compose up --remove-orphans -d db
     cx=0
@@ -94,7 +99,7 @@ bringup(){
 ###############################################################################
 
 cd ${WORKSPACE}/build/migration/db2
-pre_integration
+pre_integration "${1}"
 
 # EOF
 ###############################################################################

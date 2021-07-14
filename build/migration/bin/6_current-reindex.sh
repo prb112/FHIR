@@ -11,21 +11,21 @@ set -x
 run_reindex(){
     migration="${1}"
 
-    if [ ! -z "${migration}" ] && [ -f "build/migration/${migration}/6_current-reindex.sh" ]
+    if [ ! -z "${migration}" ] && [ -f "${WORKSPACE}/fhir/build/migration/${migration}/6_current-reindex.sh" ]
     then 
         echo "Running [${migration}] specific integration tests"
-        bash build/migration/${migration}/6_current-reindex.sh
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/6_current-reindex.sh
     else
         # Run the $reindex
         i=1
-
+        bash ${WORKSPACE}/fhir/build/common/wait_for_it.sh
         # Date YYYY-MM-DDTHH:MM:SSZ
         DATE_ISO=$(date +%Y-%m-%dT%H:%M:%SZ)
         status=$(curl -k -X POST -o reindex.json -i -w '%{http_code}' -u 'fhiruser:change-password' 'https://localhost:9443/fhir-server/api/v4/$reindex' \
             -H 'Content-Type: application/fhir+json' -H 'X-FHIR-TENANT-ID: default' \
             -d "{\"resourceType\": \"Parameters\",\"parameter\":[{\"name\":\"resourceCount\",\"valueInteger\":100},{\"name\":\"tstamp\",\"valueString\":\"${DATE_ISO}\"}]}")
         echo "Status: ${status}"
-        cat reindex.json
+
         while [ $status -ne 200 ]
         do
             if [ $status -eq 000 ]

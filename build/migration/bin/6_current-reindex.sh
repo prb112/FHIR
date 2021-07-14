@@ -28,6 +28,11 @@ run_reindex(){
         cat reindex.json
         while [ $status -ne 200 ]
         do
+            if [ $status -eq 000 ]
+            then 
+                echo "Bad Response... server is not up"
+                exit 30
+            fi
             if [ $status -eq 400 ]
             then
                 echo "bad request on the client side"
@@ -39,6 +44,10 @@ run_reindex(){
                 echo "bad results on the server side"
                 cat reindex.json
                 exit 10
+            fi
+            if [ ! -f reindex.json ]
+            then
+                echo "File expected, something didn't work right"
             fi
             i=$((i+1))
             if [ $(cat reindex.json | grep -c "Reindex complete") -eq 1 ]

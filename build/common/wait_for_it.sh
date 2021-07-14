@@ -31,6 +31,12 @@ wait_for_it(){
             echo "Sleeping 30 secs..."
             sleep 30
         fi
+        if [ $status -eq 500 ]
+        then
+            echo "bad results on the server side"
+            cat ${WORKSPACE}/health.json
+            exit 10
+        fi
     done
 
     if [ $status -ne 200 ]

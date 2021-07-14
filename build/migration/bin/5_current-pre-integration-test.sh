@@ -12,10 +12,10 @@ set -ex
 migration_pre(){
     migration="${1}"
 
-    if [ ! -z "${migration}" ] && [ -f ${WORKSPACE}/build/migration/${migration}/5_current-pre-integration-test.sh ]
+    if [ ! -z "${migration}" ] && [ -f ${WORKSPACE}/fhir/build/migration/${migration}/5_current-pre-integration-test.sh ]
     then 
         echo "Running [${migration}] pre-integration-test"
-        bash ${WORKSPACE}/build/migration/${migration}/5_current-pre-integration-test.sh
+        bash ${WORKSPACE}/fhir/build/migration/${migration}/5_current-pre-integration-test.sh
     fi
 }
 

@@ -45,7 +45,7 @@ echo 'change-password' > tenant.key
 java -jar ${WORKSPACE}/fhir/fhir-persistence-schema/target/fhir-persistence-schema-*-cli.jar \
     --db-type db2 --prop db.host=localhost --prop db.port=50000 --prop db.database=fhirdb \
     --prop user=db2inst1 --prop password=change-password \
-    --update-schema
+    --update-schema --grant-to fhirserver
 
 # Reset to Original Directory
 popd > /dev/null

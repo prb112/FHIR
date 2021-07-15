@@ -87,17 +87,18 @@ bringup(){
     docker-compose up --remove-orphans -d fhir
     sleep 30
     docker container inspect db2_fhir_1 | jq -r '.[]'
-    docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status'
+    echo "Container Status: " $(docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status')
+    echo "Container Health: " $(docker container inspect db2_fhir_1  | jq -r '.[] | select (.Config.Hostname == "fhir").State.Health.Status')
     cx=0
-    while [ $(docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_fhir_1  | jq -r '.[] | select (.Config.Hostname == "fhir").State.Health.Status' | grep running | wc -l) -eq 1 ]
+    while [ $(docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_fhir_1  | jq -r '.[] | select (.Config.Hostname == "fhir").State.Health.Status' | grep starting | wc -l) -eq 1 ]
     do
-        echo "Waiting on startup of fhir ${cx}"
+        echo "Waiting on startup of current fhir ${cx}"
         cx=$((cx + 1))
         if [ ${cx} -ge 300 ]
         then
             echo "Failed to start fhir"
         fi
-        sleep 1
+        sleep 5
     done
     docker container logs "db2_fhir_1"
 }

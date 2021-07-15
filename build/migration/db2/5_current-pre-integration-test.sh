@@ -85,7 +85,7 @@ bringup(){
 
     # Startup FHIR
     docker-compose up --remove-orphans -d fhir
-    sleep 10
+    sleep 120
     docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status'
     cx=0
     while [ $(docker container inspect db2_fhir_1 | jq -r '.[] | select (.Config.Hostname == "fhir").State.Status' | wc -l) -gt 0 ] && [ $(docker container inspect db2_fhir_1  | jq -r '.[] | select (.Config.Hostname == "fhir").State.Health.Status' | grep running | wc -l) -eq 1 ]
